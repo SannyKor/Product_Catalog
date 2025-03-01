@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using System.Runtime.CompilerServices;
+//using System.Text.Json;
+
 
 namespace Catalog
 {
@@ -23,6 +27,7 @@ namespace Catalog
     {
         private List<Unit> units = new List<Unit>();
         private int UnitId = 10001;
+        private const string FileName = "catalog.bin";
 
         public void AddUnit(string name, string description, double price, int quantity)
         {
@@ -192,6 +197,66 @@ namespace Catalog
             }
             Console.WriteLine("для продовження натисніть 'enter'");
             Console.ReadLine();
+        }
+        private void SaveToFile()
+        {
+            //var json = JsonSerializer.Serialize(units, new JsonSerializerOptions { WriteIndented = true });
+            //File.WriteAllText(FileName, json);
+            using (FileStream fs = new FileStream(FileName, FileMode.Create))
+            {
+                using (BinaryWriter writer = new BinaryWriter(fs))
+                {
+                    writer.Write(units.Count);
+                    foreach (var unit in units)
+                    {
+                        writer.Write(unit.Id);
+                        writer.Write(unit.Name);
+                        writer.Write(unit.Description);
+                        writer.Write(unit.Price);
+                        writer.Write(unit.Quantity);
+                        writer.Write(unit.AddeDate.Ticks);
+                        writer.Write(unit.QuantityHistory.Count);
+                        foreach (var history in unit.QuantityHistory)
+                        {
+                            writer.Write(history);
+                        }
+                    }
+                }
+            }
+            
+        }
+        private void LoadFromFile()
+        {
+            if (File.Exists(FileName))
+            {
+                //var json = File.ReadAllText(FileName);
+                //units = JsonSerializer.Deserialize<List<Unit>>(json);
+                using (FileStream fs = new FileStream(FileName, FileMode.Open))
+                {
+                    using (BinaryReader reader = new BinaryReader(fs))
+                    {
+                        int count = reader.ReadInt32();
+                        for (int i = 0; i < count; i++)
+                        {
+                            Unit unit = new Unit
+                            {
+                                Id = reader.ReadInt32(),
+                                Name = reader.ReadString(),
+                                Description = reader.ReadString(),
+                                Price = reader.ReadDouble(),
+                                Quantity = reader.ReadInt32(),
+                                AddeDate = new DateTime(reader.ReadInt64()),
+                            };
+                            int historyCount = reader.ReadInt32();
+                            for (int j = 0; j < historyCount; j++)
+                            {
+                                unit.QuantityHistory.Add(reader.ReadString());
+                            }
+                            units.Add(unit);
+                        }
+                    }
+                }
+            }
         }
     }
 
