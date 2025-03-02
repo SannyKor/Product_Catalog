@@ -29,6 +29,11 @@ namespace Catalog
         private int UnitId = 10001;
         private const string FileName = "catalog.bin";
 
+        public Catalog() 
+        {
+            LoadFromFile();
+        }
+
         public void AddUnit(string name, string description, double price, int quantity)
         {
             Unit unit = new Unit { Id = UnitId++, Name = name, Description = description, Price = price, Quantity = quantity };
@@ -37,6 +42,7 @@ namespace Catalog
             unit.QuantityHistory.Add($"Початкова кількість: {quantity}; \t час: {time}");
             Console.WriteLine("Товар додадно.\n");
             unit.AddeDate = time;
+            
         }
         public void ShowUnit(int id)
         {
@@ -79,6 +85,7 @@ namespace Catalog
             {
                 units.Remove(unit);
                 Console.WriteLine("Товар видалено\n");
+                
             }
             else
             {
@@ -96,6 +103,7 @@ namespace Catalog
                 unit.Quantity = quantity;
                 Console.WriteLine($"кількість змінено.\nнатисніть 'enter' для продовження");
                 Console.ReadLine();
+
             }
             else
             {
@@ -127,6 +135,7 @@ namespace Catalog
                 unit.Name = name;
                 Console.WriteLine($"нове ім'я:\t{unit.Name}\nнатисніть 'enter' для продовження");
                 Console.ReadLine();
+
             }
             else
             {
@@ -204,7 +213,7 @@ namespace Catalog
             //File.WriteAllText(FileName, json);
             using (FileStream fs = new FileStream(FileName, FileMode.Create))
             {
-                using (BinaryWriter writer = new BinaryWriter(fs))
+                using (BinaryWriter writer = new BinaryWriter(fs, Encoding.UTF8))
                 {
                     writer.Write(units.Count);
                     foreach (var unit in units)
@@ -233,7 +242,7 @@ namespace Catalog
                 //units = JsonSerializer.Deserialize<List<Unit>>(json);
                 using (FileStream fs = new FileStream(FileName, FileMode.Open))
                 {
-                    using (BinaryReader reader = new BinaryReader(fs))
+                    using (BinaryReader reader = new BinaryReader(fs, Encoding.UTF8))
                     {
                         int count = reader.ReadInt32();
                         for (int i = 0; i < count; i++)
@@ -258,6 +267,10 @@ namespace Catalog
                 }
             }
         }
+        ~Catalog()
+        {
+            SaveToFile();
+        }
     }
 
 
@@ -266,10 +279,11 @@ namespace Catalog
 
         static void Main(string[] args)
         {
-            Console.OutputEncoding = Encoding.UTF8;
-            Console.InputEncoding = Encoding.UTF8;
+            Console.OutputEncoding = Encoding.GetEncoding("windows-1251");
+            Console.InputEncoding = Encoding.GetEncoding("windows-1251");
 
             Catalog catalog = new Catalog();
+            
 
             while (true)
             {
