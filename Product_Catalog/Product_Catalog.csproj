@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\ClassConsoleUI.cs" />
+    <Compile Include="Models\ClassCatalog.cs" />
     <Compile Include="Models\ClassUnit.cs" />
     <Compile Include="Models\ClassStorage.cs" />
     <Compile Include="Program.cs" />

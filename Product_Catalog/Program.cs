@@ -7,204 +7,16 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using ClassStorage;
 using ClassUnit;
+using ClassCatalog;
+using ClassConsoleUI;
 //using System.Text.Json;
 
 
-namespace Catalog
+namespace Product_Catalog
 {
    
 
-    class Catalog
-    {
-        private List<Unit> units = new List<Unit>();
-        private int UnitId = 10001;
-        Storage storage = new Storage();
-
-
-        public Catalog() 
-        {
-            units = storage.LoadFromFile();
-        }
-
-        public void AddUnit(string name, string description, double price, int quantity)
-        {
-            Unit unit = new Unit { Id = UnitId++, Name = name, Description = description, Price = price, Quantity = quantity };
-            units.Add(unit);
-            DateTime time = DateTime.Now;
-            unit.QuantityHistory.Add($"Початкова кількість: {quantity}; \t час: {time}");
-            Console.WriteLine("Товар додадно.\n");
-            unit.AddeDate = time;
-            
-        }
-        public void ShowUnit(int id)
-        {
-            Unit unit = units.Find(u => u.Id == id);
-            if (unit != null)
-            {
-                Console.WriteLine($"артикул: \t{unit.Id}");
-                Console.WriteLine($"назва:\t\t{unit.Name}");
-                Console.WriteLine($"кількість: \t{unit.Quantity}");
-                Console.WriteLine($"опис: \t\t{unit.Description}");
-                Console.WriteLine($"ціна: \t\t{unit.Price}\n");
-            }
-            else
-            {
-                Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");
-                Console.ReadLine();
-            }
-        }
-        public void ShowAllUnits()
-        {
-            if (units.Count != 0)
-            {
-                foreach (Unit unit in units)
-                {
-                    ShowUnit(unit.Id);
-                }
-                Console.WriteLine($"\nнатисніть 'enter' для продовження");
-                Console.ReadLine();
-            }
-            else
-            {
-                Console.WriteLine("в каталозі ще немає доданих товарів. натисніть 'enter' для продовження\n");
-                Console.ReadLine();
-            }
-        }
-        public void RemoveUnit(int id)
-        {
-            Unit unit = units.Find(u => u.Id == id);
-            if (unit != null)
-            {
-                units.Remove(unit);
-                Console.WriteLine("Товар видалено\n");
-                
-            }
-            else
-            {
-                Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");
-                Console.ReadLine();
-            }
-        }
-        public void ChangeQuantity(int id, int quantity)
-        {
-            Unit unit = units.Find(u => u.Id == id);
-            if (unit != null)
-            {
-                DateTime time = DateTime.Now;
-                unit.QuantityHistory.Add($"{quantity}\t{time}");
-                unit.Quantity = quantity;
-                Console.WriteLine($"кількість змінено.\nнатисніть 'enter' для продовження");
-                Console.ReadLine();
-
-            }
-            else
-            {
-                Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");
-                Console.ReadLine();
-            }
-
-        }
-        public void ChangeId(int id, int NewId)
-        {
-            Unit unit = units.Find(u => u.Id == id);
-            if (unit != null)
-            {
-                unit.Id = NewId;
-                Console.WriteLine($"новий артикул:\t{unit.Id}\nнатисніть 'enter' для продовження");
-                Console.ReadLine();
-            }
-            else
-            {
-                Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");
-                Console.ReadLine();
-            }
-        }
-        public void ChangeName(int id, string name)
-        {
-            Unit unit = units.Find(u => u.Id == id);
-            if (unit != null)
-            {
-                unit.Name = name;
-                Console.WriteLine($"нове ім'я:\t{unit.Name}\nнатисніть 'enter' для продовження");
-                Console.ReadLine();
-
-            }
-            else
-            {
-                Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");
-                Console.ReadLine();
-            }
-        }
-        public void ChangeDiscription(int id, string description)
-        {
-            Unit unit = units.Find(u => u.Id == id);
-            if (unit != null)
-            {
-                unit.Description = description;
-                Console.WriteLine($"новий опис:\t{unit.Description}\nнатисніть 'enter' для продовження");
-                Console.ReadLine();
-            }
-            else
-            {
-                Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");
-                Console.ReadLine();
-            }
-        }
-        public void ChangePrice(int id, double price)
-        {
-            Unit unit = units.Find(u => u.Id == id);
-            if (unit != null)
-            {
-                unit.Price = price;
-                Console.WriteLine($"нова ціна:\t{unit.Price}\nнатисніть 'enter' для продовження");
-                Console.ReadLine();
-            }
-            else
-            {
-                Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");
-                Console.ReadLine();
-            }
-        }
-        public void ShowQuantityHistory(int id)
-        {
-            Unit unit = units.Find(u => u.Id == id);
-            if (unit != null)
-            {
-                foreach (var quantity in unit.QuantityHistory)
-                {
-                    Console.WriteLine($"{quantity}\nнатисніть 'enter' для продовження\n");
-                    Console.ReadLine();
-                }
-            }
-            else
-            {
-                Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");
-                Console.ReadLine();
-            }
-        }
-        public void FindUnit(string Query)
-        {
-            var found = units.FindAll(u => u.Name.IndexOf(Query, StringComparison.OrdinalIgnoreCase) >= 0);
-            if (found.Count > 0)
-            {
-                foreach (var unit in found)
-                {
-                    ShowUnit(unit.Id);
-                }
-            }
-            else
-            {
-                Console.WriteLine("товар за запитом відсутній");
-            }
-            Console.WriteLine("для продовження натисніть 'enter'");
-            Console.ReadLine();
-        }
-        
-        ~Catalog()
-        {
-            storage.SaveToFile(units);
-        }
-    }
+    
 
 
     internal class Program
@@ -216,81 +28,42 @@ namespace Catalog
             Console.InputEncoding = Encoding.GetEncoding("windows-1251");
 
             Catalog catalog = new Catalog();
-            
+            ConsoleUI consoleUI = new ConsoleUI(catalog);
+
 
             while (true)
             {
-                Console.WriteLine("виберіть один із варіантів: " +
-                    "\n1. додати новий товар; " +
-                    "\n2. видалити товар; " +
-                    "\n3. змінити кількість; " +
-                    "\n4. змінити інформацію про товар; " +
-                    "\n5. вивести інформацію про товар;" +
-                    "\n6. показати весь каталог;" +
-                    "\n7. показати рух кількості по товару;" +
-                    "\n8. знайти по назві або частині назви;" +
-                    "\n9. вийти;\n");
-                string choise = Console.ReadLine();
+                consoleUI.ShowMainManu();
+                    //1. додати новий товар;
+                    //2. видалити товар;
+                    //3. змінити кількість;
+                    //4. змінити інформацію про товар;
+                    //5. вивести інформацію про товар;
+                    //6. показати весь каталог;
+                    //7. показати рух кількості по товару;
+                    //8. знайти по назві або частині назви;
+                    //9. вийти;
+                string choise = consoleUI.MakeChoise();
 
                 switch (choise)
                 {
                     case "1":
-
-                        Console.WriteLine("введіть ім'я: ");
-                        string name = Console.ReadLine();
-                        Console.WriteLine("введіть кількість: ");
-                        int quantity = int.Parse(Console.ReadLine());
-                        Console.WriteLine("введіть ціну: ");
-                        double prise = double.Parse(Console.ReadLine());
-                        Console.WriteLine("введіть опис: ");
-                        string description = Console.ReadLine();
-                        catalog.AddUnit(name, description, prise, quantity);
+                        consoleUI.CreateNewUnit();
                         break;
+
                     case "2":
-                        Console.WriteLine("введіть артикул товару для видалення: ");
-                        int id = int.Parse(Console.ReadLine());
-                        catalog.RemoveUnit(id);
-                        break;
-                    case "3":
-                        Console.WriteLine("введіть артикул: ");
-                        id = int.Parse(Console.ReadLine());
-                        Console.WriteLine("введіть кількість: ");
-                        quantity = int.Parse(Console.ReadLine());
-                        catalog.ChangeQuantity(id, quantity);
-                        break;
-                    case "4":
-                        Console.WriteLine("введіть артикул: ");
-                        id = int.Parse(Console.ReadLine());
-                        Console.WriteLine("виберіть варіант: " +
-                            "\n1. змінити ім'я;" +
-                            "\n2. змінити ціну;" +
-                            "\n3. змінити опис;\n");
-                        int changeChoise = int.Parse(Console.ReadLine());
-                        if (changeChoise == 1)
-                        {
-                            Console.WriteLine("введіть нове ім'я: ");
-                            name = Console.ReadLine();
-                            catalog.ChangeName(id, name);
-                        }
-                        else if (changeChoise == 2)
-                        {
-                            Console.WriteLine("введіть нову ціну: ");
-                            prise = double.Parse(Console.ReadLine());
-                            catalog.ChangePrice(id, prise);
-                        }
-                        else if (changeChoise == 3)
-                        {
-                            Console.WriteLine("Додайте новий опис: ");
-                            description = Console.ReadLine();
-                            catalog.ChangeDiscription(id, description);
-                        }
-                        else
-                        {
-                            Console.WriteLine("невірний ввибір!");
-                        }
+                        consoleUI.RemoveUnit();
                         break;
 
-                    case "5":
+                    case "3":
+                        consoleUI.ChangeQuantity();
+                        break;
+
+                    case "4":
+                        consoleUI.ChangeUnitInfo();
+                        break;
+
+                    /*case "5":
                         Console.WriteLine("введіть артикул: ");
                         id = int.Parse(Console.ReadLine());
                         catalog.ShowUnit(id);
@@ -309,7 +82,7 @@ namespace Catalog
                         Console.WriteLine("введіть запит:");
                         string query = Console.ReadLine();
                         catalog.FindUnit(query);
-                        break;
+                        break;*/
                     case "9":
                         return;
 
