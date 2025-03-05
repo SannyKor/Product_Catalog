@@ -12,12 +12,13 @@ namespace ClassCatalog
     {
         private List<Unit> units = new List<Unit>();
         private int UnitId = 10001;
-        Storage storage = new Storage();
+        Storage storage = new StorageFromFile();
 
 
-        public Catalog()
+        public Catalog(Storage storage)
         {
-            units = storage.LoadFromFile();
+            this.storage = storage;
+            units = storage.LoadUnits();
         }
 
         public void AddUnit(string name, string description, double price, int quantity)
@@ -196,7 +197,7 @@ namespace ClassCatalog
 
         ~Catalog()
         {
-            storage.SaveToFile(units);
+            storage.SaveUnits(units);
         }
     }
 }

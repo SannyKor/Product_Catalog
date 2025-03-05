@@ -8,10 +8,16 @@ using ClassUnit;
 
 namespace ClassStorage
 {
-    internal class Storage
+    abstract class Storage
+    {
+        public abstract void SaveUnits(List<Unit> units);
+        public abstract List<Unit> LoadUnits();
+    }
+
+    class StorageFromFile: Storage
     {
         private const string FileName = "catalog.bin";
-        public void SaveToFile(List<Unit> units)
+        public override void SaveUnits(List<Unit> units)
         {
             //var json = JsonSerializer.Serialize(units, new JsonSerializerOptions { WriteIndented = true });
             //File.WriteAllText(FileName, json);
@@ -38,7 +44,7 @@ namespace ClassStorage
             }
 
         }
-        public List<Unit> LoadFromFile()
+        public override List<Unit> LoadUnits()
         {
             List<Unit> units = new List<Unit>();
             if (File.Exists(FileName))

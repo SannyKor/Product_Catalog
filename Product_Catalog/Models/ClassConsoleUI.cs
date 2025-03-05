@@ -16,7 +16,7 @@ namespace ClassConsoleUI
         {
             this.catalog = catalog;
         }
-        public void ShowMainManu ()
+        public void ShowMainMenu ()
         {
             Console.WriteLine("виберіть один із варіантів: " +
                     "\n1. додати новий товар; " +
@@ -65,6 +65,7 @@ namespace ClassConsoleUI
         {
             Console.WriteLine("введіть артикул: ");
             int id = int.Parse(Console.ReadLine());
+            catalog.ShowUnit(id);
 
             Console.WriteLine("введіть нове ім'я або enter щоб продовжити: ");
             string name = Console.ReadLine();
@@ -85,40 +86,74 @@ namespace ClassConsoleUI
             {
                 catalog.ChangeDiscription(id, description);
             }
+            Console.WriteLine("Оновлена інформація про товар: ");
+            catalog.ShowUnit(id);
+            Console.WriteLine("натисніть 'enter' для продовження\n");
+            Console.ReadLine();
         }
-
-
-                    
-                   
-
-                   /* case "5":
-                        Console.WriteLine("введіть артикул: ");
-                        id = int.Parse(Console.ReadLine());
-                        catalog.ShowUnit(id);
+        public void ShowUnitInfo()
+        {
+            Console.WriteLine("введіть артикул: ");
+            int id = int.Parse(Console.ReadLine());
+            catalog.ShowUnit(id);
+        }
+        public void ShowAllUnitsInfo()
+        {
+            Console.WriteLine("ваш каталог: ");
+            catalog.ShowAllUnits();
+        }
+        public void ShowUnitQuantityHistory()
+        {
+            Console.WriteLine("введіть артикул: ");
+            int id = int.Parse(Console.ReadLine());
+            catalog.ShowQuantityHistory(id);
+        }
+        public void FindUnitByName()
+        {
+            Console.WriteLine("введіть запит:");
+            string query = Console.ReadLine();
+            catalog.FindUnit(query);
+        }
+        public void RunMainMenu()
+        {
+            while (true)
+            {
+                ShowMainMenu();
+                string choise = MakeChoise();
+                switch (choise)
+                {
+                    case "1":
+                        CreateNewUnit();
                         break;
-
+                    case "2":
+                        RemoveUnit();
+                        break;
+                    case "3":
+                        ChangeQuantity();
+                        break;
+                    case "4":
+                        ChangeUnitInfo();
+                        break;
+                    case "5":
+                        ShowUnitInfo();
+                        break;
                     case "6":
-                        Console.WriteLine("ваш каталог: ");
-                        catalog.ShowAllUnits();
+                        ShowAllUnitsInfo();
                         break;
                     case "7":
-                        Console.WriteLine("введіть артикул: ");
-                        id = int.Parse(Console.ReadLine());
-                        catalog.ShowQuantityHistory(id);
+                        ShowUnitQuantityHistory();
                         break;
                     case "8":
-                        Console.WriteLine("введіть запит:");
-                        string query = Console.ReadLine();
-                        catalog.FindUnit(query);
+                        FindUnitByName();
                         break;
                     case "9":
                         return;
-
                     default:
-                        Console.WriteLine("невірний вибір!");
+                        Console.WriteLine("невірний вибір. спробуйте ще раз\n");
                         break;
                 }
+            }
+        }
 
-            }*/
     }
 }
