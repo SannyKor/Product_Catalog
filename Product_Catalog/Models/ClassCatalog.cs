@@ -19,6 +19,7 @@ namespace ClassCatalog
         {
             this.storage = storage;
             units = storage.LoadUnits();
+            UnitId = units.Count > 0 ? units[units.Count - 1].Id + 1 : 10001;
         }
 
         public void AddUnit(string name, string description, double price, int quantity)
@@ -104,6 +105,12 @@ namespace ClassCatalog
             Unit unit = units.Find(u => u.Id == id);
             if (unit != null)
             {
+                if(units.Exists(u => u.Id == NewId))
+                {
+                    Console.WriteLine("Товар з таким артикулом вже існує. натисніть 'enter' для продовження\n");
+                    Console.ReadLine();
+                    return;
+                }
                 unit.Id = NewId;
                 Console.WriteLine($"новий артикул:\t{unit.Id}\nнатисніть 'enter' для продовження");
                 Console.ReadLine();

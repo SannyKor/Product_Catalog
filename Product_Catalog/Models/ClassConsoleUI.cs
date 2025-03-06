@@ -86,6 +86,13 @@ namespace ClassConsoleUI
             {
                 catalog.ChangeDiscription(id, description);
             }
+            
+            Console.WriteLine("змініть артикул або натисніть enter щоб продовжити: ");
+            if (int.TryParse(Console.ReadLine(), out int NewId))
+            {                
+                catalog.ChangeId(id, NewId);
+            }
+            id = NewId;
             Console.WriteLine("Оновлена інформація про товар: ");
             catalog.ShowUnit(id);
             Console.WriteLine("натисніть 'enter' для продовження\n");
