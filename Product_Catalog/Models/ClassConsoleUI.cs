@@ -87,7 +87,7 @@ namespace ClassConsoleUI
                 catalog.ChangeDiscription(id, description);
             }
             
-            Console.WriteLine("змініть артикул або натисніть enter щоб продовжити: ");
+            /*Console.WriteLine("змініть артикул або натисніть enter щоб продовжити: ");
             if (int.TryParse(Console.ReadLine(), out int NewId))
             {                
                 catalog.ChangeId(id, NewId);
@@ -96,7 +96,7 @@ namespace ClassConsoleUI
             Console.WriteLine("Оновлена інформація про товар: ");
             catalog.ShowUnit(id);
             Console.WriteLine("натисніть 'enter' для продовження\n");
-            Console.ReadLine();
+            Console.ReadLine();*/
         }
         public void ShowUnitInfo()
         {

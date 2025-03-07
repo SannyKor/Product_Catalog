@@ -32,22 +32,26 @@ namespace ClassCatalog
             unit.AddeDate = time;
 
         }
-        public void ShowUnit(int id)
+        private Unit GetUnitById(int id)
         {
             Unit unit = units.Find(u => u.Id == id);
-            if (unit != null)
+            if (unit == null)
             {
+                Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");
+                Console.ReadLine();
+            }   
+            return unit;
+        }
+        public void ShowUnit(int id)
+        {
+            Unit unit = GetUnitById(id);
+            
                 Console.WriteLine($"артикул: \t{unit.Id}");
                 Console.WriteLine($"назва:\t\t{unit.Name}");
                 Console.WriteLine($"кількість: \t{unit.Quantity}");
                 Console.WriteLine($"опис: \t\t{unit.Description}");
                 Console.WriteLine($"ціна: \t\t{unit.Price}\n");
-            }
-            else
-            {
-                Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");
-                Console.ReadLine();
-            }
+            
         }
         public void ShowAllUnits()
         {
@@ -68,41 +72,26 @@ namespace ClassCatalog
         }
         public void RemoveUnit(int id)
         {
-            Unit unit = units.Find(u => u.Id == id);
-            if (unit != null)
-            {
+            Unit unit = GetUnitById(id);
+            
                 units.Remove(unit);
                 Console.WriteLine("Товар видалено\n");
 
-            }
-            else
-            {
-                Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");
-                Console.ReadLine();
-            }
         }
         public void ChangeQuantity(int id, int quantity)
         {
-            Unit unit = units.Find(u => u.Id == id);
-            if (unit != null)
-            {
+            Unit unit = GetUnitById(id);
+            
                 DateTime time = DateTime.Now;
                 unit.QuantityHistory.Add($"{quantity}\t{time}");
                 unit.Quantity = quantity;
                 Console.WriteLine($"кількість змінено.\nнатисніть 'enter' для продовження");
                 Console.ReadLine();
 
-            }
-            else
-            {
-                Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");
-                Console.ReadLine();
-            }
-
         }
-        public void ChangeId(int id, int NewId)
+        /*public void ChangeId(int id, int NewId)
         {
-            Unit unit = units.Find(u => u.Id == id);
+            Unit unit = GetUnitById(id);
             if (unit != null)
             {
                 if(units.Exists(u => u.Id == NewId))
@@ -120,69 +109,41 @@ namespace ClassCatalog
                 Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");
                 Console.ReadLine();
             }
-        }
+        }*/
         public void ChangeName(int id, string name)
         {
-            Unit unit = units.Find(u => u.Id == id);
-            if (unit != null)
-            {
+            Unit unit = GetUnitById(id);
+            
                 unit.Name = name;
                 Console.WriteLine($"нове ім'я:\t{unit.Name}\nнатисніть 'enter' для продовження");
-                Console.ReadLine();
-
-            }
-            else
-            {
-                Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");
-                Console.ReadLine();
-            }
+                Console.ReadLine();           
         }
         public void ChangeDiscription(int id, string description)
         {
-            Unit unit = units.Find(u => u.Id == id);
-            if (unit != null)
-            {
+            Unit unit = GetUnitById(id);
+            
                 unit.Description = description;
                 Console.WriteLine($"новий опис:\t{unit.Description}\nнатисніть 'enter' для продовження");
-                Console.ReadLine();
-            }
-            else
-            {
-                Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");
-                Console.ReadLine();
-            }
+                Console.ReadLine();            
         }
         public void ChangePrice(int id, double price)
         {
-            Unit unit = units.Find(u => u.Id == id);
-            if (unit != null)
-            {
+            Unit unit = GetUnitById(id);
+           
                 unit.Price = price;
                 Console.WriteLine($"нова ціна:\t{unit.Price}\nнатисніть 'enter' для продовження");
-                Console.ReadLine();
-            }
-            else
-            {
-                Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");
-                Console.ReadLine();
-            }
+                Console.ReadLine();            
         }
         public void ShowQuantityHistory(int id)
         {
-            Unit unit = units.Find(u => u.Id == id);
-            if (unit != null)
-            {
+            Unit unit = GetUnitById(id);
+            
                 foreach (var quantity in unit.QuantityHistory)
                 {
                     Console.WriteLine($"{quantity}\nнатисніть 'enter' для продовження\n");
                     Console.ReadLine();
                 }
-            }
-            else
-            {
-                Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");
-                Console.ReadLine();
-            }
+           
         }
         public void FindUnit(string Query)
         {
