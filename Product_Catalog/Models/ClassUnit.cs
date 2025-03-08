@@ -14,7 +14,15 @@ namespace ClassUnit
         public string Description { get; set; }
         public double Price { get; set; }
         public int Quantity { get; set; }
-        public DateTime AddeDate { get; set; } = DateTime.Now;
+        public DateTime AddedDate { get; set; } = DateTime.Now;
         public List<string> QuantityHistory { get; set; } = new List<string>();
+        public void Info()
+        {
+            Console.WriteLine($"артикул: \t{Id}");
+            Console.WriteLine($"назва:\t\t{Name}");
+            Console.WriteLine($"кількість: \t{Quantity}");
+            Console.WriteLine($"опис: \t\t{Description}");
+            Console.WriteLine($"ціна: \t\t{Price}\n");
+        }
     }
 }

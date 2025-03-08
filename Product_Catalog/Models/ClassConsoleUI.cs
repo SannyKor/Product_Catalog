@@ -9,7 +9,7 @@ using ClassUnit;
 
 namespace ClassConsoleUI
 {
-    internal class ConsoleUI
+    internal class ConsoleUI 
     {
         private Catalog catalog;
         public ConsoleUI(Catalog catalog)
@@ -59,61 +59,69 @@ namespace ClassConsoleUI
             int id = int.Parse(Console.ReadLine());
             Console.WriteLine("введіть кількість: ");
             int quantity = int.Parse(Console.ReadLine());
-            catalog.ChangeQuantity(id, quantity);
+            catalog.GetUnitById(id).Quantity = quantity;
         }
         public void ChangeUnitInfo()
         {
             Console.WriteLine("введіть артикул: ");
             int id = int.Parse(Console.ReadLine());
-            catalog.ShowUnit(id);
+            Unit unit = catalog.GetUnitById(id);
 
             Console.WriteLine("введіть нове ім'я або enter щоб продовжити: ");
             string name = Console.ReadLine();
             if (!string.IsNullOrEmpty(name))
             {
-                catalog.ChangeName(id, name);
+                unit.Name = name;
             }
 
             Console.WriteLine("змініть ціну або натисніть enter щоб продовжити: ");            
             if (double.TryParse(Console.ReadLine(), out double price))
             {
-                catalog.ChangePrice(id, price);
+                unit.Price = price;
             }
 
             Console.WriteLine("введіть новий опис або enter щоб продовжити без змін: ");
             string description = Console.ReadLine();
             if (!string.IsNullOrEmpty(description))
             {
-                catalog.ChangeDiscription(id, description);
+                unit.Description = description;
             }
-            
-            /*Console.WriteLine("змініть артикул або натисніть enter щоб продовжити: ");
-            if (int.TryParse(Console.ReadLine(), out int NewId))
-            {                
-                catalog.ChangeId(id, NewId);
-            }
-            id = NewId;
-            Console.WriteLine("Оновлена інформація про товар: ");
-            catalog.ShowUnit(id);
-            Console.WriteLine("натисніть 'enter' для продовження\n");
-            Console.ReadLine();*/
         }
         public void ShowUnitInfo()
         {
             Console.WriteLine("введіть артикул: ");
-            int id = int.Parse(Console.ReadLine());
-            catalog.ShowUnit(id);
+            int id = int.Parse(Console.ReadLine());            
+            Unit unit = catalog.GetUnitById(id);
+            if (unit != null)
+            {
+                unit.Info();
+            }
         }
-        public void ShowAllUnitsInfo()
+        public void ShowAllUnitsInfo(List <Unit> Units)
         {
-            Console.WriteLine("ваш каталог: ");
-            catalog.ShowAllUnits();
+            if (Units.Count == 0)
+            {
+                Console.WriteLine("в каталозі ще немає доданих товарів. натисніть 'enter' для продовження\n");
+            }
+            else
+            {
+                Console.WriteLine("ваш каталог: ");
+                foreach (Unit unit in Units)
+                {
+                    unit.Info();
+                }
+            }
         }
         public void ShowUnitQuantityHistory()
         {
             Console.WriteLine("введіть артикул: ");
             int id = int.Parse(Console.ReadLine());
-            catalog.ShowQuantityHistory(id);
+            Unit unit = catalog.GetUnitById(id);
+
+            foreach (var quantity in unit.QuantityHistory)
+            {
+                Console.WriteLine($"{quantity}\nнатисніть 'enter' для продовження\n");                
+            }
         }
         public void FindUnitByName()
         {
@@ -145,7 +153,7 @@ namespace ClassConsoleUI
                         ShowUnitInfo();
                         break;
                     case "6":
-                        ShowAllUnitsInfo();
+                        ShowAllUnitsInfo(catalog.units);
                         break;
                     case "7":
                         ShowUnitQuantityHistory();
