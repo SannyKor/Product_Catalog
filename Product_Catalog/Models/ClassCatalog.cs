@@ -27,7 +27,7 @@ namespace ClassCatalog
             Unit unit = new Unit { Id = UnitId++, Name = name, Description = description, Price = price, Quantity = quantity };
             units.Add(unit);
             DateTime time = DateTime.Now;
-            unit.QuantityHistory.Add($"Початкова кількість: {quantity}; \t час: {time}");
+            unit.QuantityHistory.Add($"час: {time}:\t{quantity};");
             Console.WriteLine("Товар додадно.\n");
             unit.AddedDate = time;
 
@@ -37,35 +37,33 @@ namespace ClassCatalog
             Unit unit = units.Find(u => u.Id == id);
             if (unit == null)
             {
-                Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");                
+                //Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");                
+                return null;
             }   
             return unit;
         }
         
        
-        public void RemoveUnit(int id)
+        public bool RemoveUnit(int id)
         {
             Unit unit = GetUnitById(id);
-            
-                units.Remove(unit);
-                Console.WriteLine("Товар видалено\n");
-
-        }
-        public void FindUnit(string Query)
-        {
-            var found = units.FindAll(u => u.Name.IndexOf(Query, StringComparison.OrdinalIgnoreCase) >= 0);
-            if (found.Count > 0)
+            if (unit == null)
             {
-                foreach (var unit in found)
-                {
-                    unit.Info();
-                }
+                return false;
             }
             else
             {
-                Console.WriteLine("товар за запитом відсутній");
+                units.Remove(unit);
+                //Console.WriteLine("Товар видалено\n");
+                return true;
             }
-            Console.WriteLine("для продовження натисніть 'enter'");           
+
+        }
+        public List<Unit> FindUnit(string Query)
+        {
+            var found = units.FindAll(u => u.Name.IndexOf(Query, StringComparison.OrdinalIgnoreCase) >= 0);
+            return found;
+
         }
 
         ~Catalog()

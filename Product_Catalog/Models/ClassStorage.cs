@@ -33,7 +33,7 @@ namespace ClassStorage
                         writer.Write(unit.Description);
                         writer.Write(unit.Price);
                         writer.Write(unit.Quantity);
-                        writer.Write(unit.AddeDate.Ticks);
+                        writer.Write(unit.AddedDate.Ticks);
                         writer.Write(unit.QuantityHistory.Count);
                         foreach (var history in unit.QuantityHistory)
                         {
@@ -65,7 +65,7 @@ namespace ClassStorage
                                 Description = reader.ReadString(),
                                 Price = reader.ReadDouble(),
                                 Quantity = reader.ReadInt32(),
-                                AddeDate = new DateTime(reader.ReadInt64()),
+                                AddedDate = new DateTime(reader.ReadInt64()),
                             };
                             int historyCount = reader.ReadInt32();
                             for (int j = 0; j < historyCount; j++)
