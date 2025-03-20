@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ClassStorage;
-using ClassUnit;
+
 
 namespace ClassCatalog
 {
-    internal class Catalog
+    public class Catalog
     {
-        public List<Unit> units = new List<Unit>();        
-        private int UnitId = 10001;
+        protected List<Unit> units = new List<Unit>();
+        public IReadOnlyList<Unit> Units => units;
+        private int UnitId;
         Storage storage = new StorageFromFile();
+
+        
 
 
         public Catalog(Storage storage)
@@ -24,7 +26,7 @@ namespace ClassCatalog
 
         public void AddUnit(string name, string description, double price, int quantity)
         {
-            Unit unit = new Unit { Id = UnitId++, Name = name, Description = description, Price = price, Quantity = quantity };
+            Unit unit = new Unit { Name = name, Description = description, Price = price, Quantity = quantity };
             units.Add(unit);
             DateTime time = DateTime.Now;
             unit.QuantityHistory.Add($"час: {time}:\t{quantity};");

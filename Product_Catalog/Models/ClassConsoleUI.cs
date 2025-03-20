@@ -1,39 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using ClassCatalog;
-using ClassUnit;
 
-namespace ClassConsoleUI
+
+namespace ClassCatalog
+
 {
-    internal class ConsoleUI
+    public class ConsoleUI
     {
         private Catalog catalog;
         public ConsoleUI(Catalog catalog)
         {
             this.catalog = catalog;
         }
-        public void ShowMainMenu()
-        {
-            Console.WriteLine("виберіть один із варіантів: " +
-                    "\n1. додати новий товар; " +
-                    "\n2. видалити товар; " +
-                    "\n3. змінити кількість; " +
-                    "\n4. змінити інформацію про товар; " +
-                    "\n5. вивести інформацію про товар;" +
-                    "\n6. показати весь каталог;" +
-                    "\n7. показати рух кількості по товару;" +
-                    "\n8. знайти по назві або частині назви;" +
-                    "\n9. вийти;\n");
-        }
-        public string MakeChoise()
-        {
-            string choise = Console.ReadLine();
-            return choise;
-        }
+        
+        
         public void CreateNewUnit()
         {
             Console.WriteLine("введіть ім'я: ");
@@ -98,7 +84,7 @@ namespace ClassConsoleUI
                 if (!string.IsNullOrEmpty(name))
                 {
 
-                    if (catalog.units.Exists(u => u.Name == name))
+                    if (catalog.Units.Any(u => u.Name == name))
                     {
                         Console.WriteLine("товар з таким ім'ям вже існує. введіть інше ім'я або enter щоб продовжити\n");
                         return;
@@ -124,6 +110,14 @@ namespace ClassConsoleUI
                 }
             }
         }
+        public void UnitInfo(Unit unit)
+        {
+            Console.WriteLine($"артикул: \t{unit.Id}");
+            Console.WriteLine($"назва:\t\t{unit.Name}");
+            Console.WriteLine($"кількість: \t{unit.Quantity}");
+            Console.WriteLine($"опис: \t\t{unit.Description}");
+            Console.WriteLine($"ціна: \t\t{unit.Price}\n");
+        }
         public void ShowUnitInfo()
         {
             Console.WriteLine("введіть артикул: ");
@@ -133,14 +127,14 @@ namespace ClassConsoleUI
             {
                 Console.WriteLine("товар не знайдено\n");
             }
-            else
-            {
-                unit.Info();
-            }
+
+            UnitInfo(unit);
+            
+
         }
-        public void ShowAllUnitsInfo(List <Unit> Units)
+        public void ShowAllUnitsInfo(IEnumerable <Unit> Units)
         {
-            if (Units.Count == 0)
+            if (catalog.Units.Count == 0)
             {
                 Console.WriteLine("в каталозі ще немає доданих товарів. натисніть 'enter' для продовження\n");
             }
@@ -149,7 +143,7 @@ namespace ClassConsoleUI
                 Console.WriteLine("ваш каталог: ");
                 foreach (Unit unit in Units)
                 {
-                    unit.Info();
+                    UnitInfo(unit);
                 }
             }
         }
@@ -174,7 +168,7 @@ namespace ClassConsoleUI
             {
                 foreach (var unit in found)
                 {
-                    unit.Info();
+                    UnitInfo(unit);
                 }
             }
             else
@@ -186,8 +180,18 @@ namespace ClassConsoleUI
         {
             while (true)
             {
-                ShowMainMenu();
-                string choise = MakeChoise();
+                Console.WriteLine("виберіть один із варіантів: " +
+                    "\n1. додати новий товар; " +
+                    "\n2. видалити товар; " +
+                    "\n3. змінити кількість; " +
+                    "\n4. змінити інформацію про товар; " +
+                    "\n5. вивести інформацію про товар;" +
+                    "\n6. показати весь каталог;" +
+                    "\n7. показати рух кількості по товару;" +
+                    "\n8. знайти по назві або частині назви;" +
+                    "\n9. вийти;\n");
+
+                string choise = Console.ReadLine();
                 switch (choise)
                 {
                     case "1":
@@ -206,7 +210,7 @@ namespace ClassConsoleUI
                         ShowUnitInfo();
                         break;
                     case "6":
-                        ShowAllUnitsInfo(catalog.units);
+                        ShowAllUnitsInfo(catalog.Units);
                         break;
                     case "7":
                         ShowUnitQuantityHistory();

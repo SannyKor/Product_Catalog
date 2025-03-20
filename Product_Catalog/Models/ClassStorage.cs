@@ -4,11 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ClassUnit;
+using ClassCatalog;
 
-namespace ClassStorage
+namespace ClassCatalog
 {
-    abstract class Storage
+    public abstract class Storage
     {
         public abstract void SaveUnits(List<Unit> units);
         public abstract List<Unit> LoadUnits();
@@ -58,9 +58,9 @@ namespace ClassStorage
                         int count = reader.ReadInt32();
                         for (int i = 0; i < count; i++)
                         {
-                            Unit unit = new Unit
+                            Unit unit = new Unit(reader.ReadInt32())
                             {
-                                Id = reader.ReadInt32(),
+                                
                                 Name = reader.ReadString(),
                                 Description = reader.ReadString(),
                                 Price = reader.ReadDouble(),
