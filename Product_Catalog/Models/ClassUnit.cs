@@ -9,19 +9,14 @@ namespace ClassCatalog
 {
     public class Unit
     {
-        private static int _id = 10001;
-
+        
         public Unit()
         {
-            Id = _id++;
+             
         }
         public Unit(int Id)
         {
-            this.Id = Id;
-            if (Id >= _id)
-            {
-                _id = Id + 1;
-            }
+            this.Id = Id;             
         }
         public int Id { get; protected set; }
         public string Name { get; set; }

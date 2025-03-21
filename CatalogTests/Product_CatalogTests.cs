@@ -10,24 +10,16 @@ namespace CatalogTests
     [TestClass]
     public sealed class Product_CatalogTests
     {
-        private Catalog catalog;
-        private FakeStorage fakeStorage;
+        
 
         [TestInitialize]
-        public void Setup()
-        {
-            
-            fakeStorage = new FakeStorage();
-            fakeStorage.Clear();
-            catalog = new Catalog(fakeStorage);
-            
-        }
+        
 
         [TestMethod]
         public void AddUnit_AddedSuccesfully()
         {
             //arrange
-
+            Catalog catalog = new Catalog(new FakeStorage());
 
             //act
             catalog.AddUnit("продукт", "опис", 100.5, 10);
@@ -40,7 +32,7 @@ namespace CatalogTests
         public void AddUnit_ValidData()
         {
             //arrange
-            
+            Catalog catalog = new Catalog(new FakeStorage());
             //act
             catalog.AddUnit("продукт", "опис", 100.5, 10);
 
@@ -56,6 +48,7 @@ namespace CatalogTests
         public void TestMethod2() 
         {
             //arrange
+            Catalog catalog = new Catalog(new FakeStorage());
             catalog.AddUnit("продукт", "опис", 100.5, 10);
             //act
             catalog.RemoveUnit(10001);
@@ -68,17 +61,17 @@ namespace CatalogTests
     }
     public class FakeStorage : Storage
     {
-        private List<Unit> _units = new List<Unit>();
+        //private List<Unit> _units = new List<Unit>();
         public override List<Unit> LoadUnits()
         {
-            return _units;
+            return new List<Unit>();
         }
         public override void SaveUnits(List<Unit> units)
         {
-            _units = new List<Unit>(units);
+            //_units = new List<Unit>(units);
         }
 
-        public void Clear() => _units.Clear();
+        //public void Clear() => _units.Clear();
 
     }
 }
