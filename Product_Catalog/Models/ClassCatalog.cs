@@ -7,27 +7,36 @@ using System.Threading.Tasks;
 
 namespace ClassCatalog
 {
+   
     public class Catalog
     {
         protected List<Unit> units = new List<Unit>();
         public IReadOnlyList<Unit> Units => units;
-        private int UnitId;
+        //зберігати в полі наступний ід нам не потрібно
+        //private int UnitId;
         Storage storage = new StorageFromFile();
-
-        
-
 
         public Catalog(Storage storage)
         {
             this.storage = storage;
             units = storage.LoadUnits();
-            UnitId = units.Count > 0 ? units[units.Count - 1].Id + 1 : 10001;
+            //код який розраховуе новий ід винисем в окремий метод GetNextUnitId
+            //UnitId = units.Count > 0 ? units[units.Count - 1].Id + 1 : 10001;
+        }
+
+        //це наш метод в який венесли код що генеруе новий ід
+        protected int GetNextUnitId()
+        {
+            return units.Count > 0 ? units[units.Count - 1].Id + 1 : 10001;
         }
 
         public void AddUnit(string name, string description, double price, int quantity)
         {
-            Unit unit = new Unit { Name = name, Description = description, Price = price, Quantity = quantity };
+            //наступний id  нам потрібен тільки тут, коли добавляем новий юніт
+            int UnitId = GetNextUnitId();
+            Unit unit = new Unit(UnitId) { Name = name, Description = description, Price = price, Quantity = quantity };
             units.Add(unit);
+
             DateTime time = DateTime.Now;
             unit.QuantityHistory.Add($"час: {time}:\t{quantity};");
             Console.WriteLine("Товар додадно.\n");
@@ -37,12 +46,16 @@ namespace ClassCatalog
         public Unit GetUnitById(int id)
         {
             Unit unit = units.Find(u => u.Id == id);
-            if (unit == null)
-            {
-                //Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");                
-                return null;
-            }   
+
             return unit;
+            //масло масляне якщо цей код прибрати нічого в роботі метода не зміниться
+
+            //if (unit == null)
+            //{
+            //    //Console.WriteLine("Товар не знайдено. натисніть 'enter' для продовження\n");                
+            //    return null;
+            //}   
+            //return unit;
         }
         
        
@@ -53,13 +66,14 @@ namespace ClassCatalog
             {
                 return false;
             }
-            else
-            {
-                units.Remove(unit);
-                //Console.WriteLine("Товар видалено\n");
-                return true;
-            }
-
+            //else
+            //{
+            //    units.Remove(unit);
+            //    //Console.WriteLine("Товар видалено\n");
+            //    return true;
+            //}
+            //ящо глянути в підказки визуал студіо то units.Remove поверта занчення
+            return units.Remove(unit);
         }
         public List<Unit> FindUnit(string Query)
         {
@@ -67,6 +81,8 @@ namespace ClassCatalog
             return found;
 
         }
+
+        
 
         ~Catalog()
         {
