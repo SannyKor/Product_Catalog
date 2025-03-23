@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ClassCatalog;
 using System.Collections.Generic;
+using Moq;
 
 
 
@@ -19,7 +20,10 @@ namespace CatalogTests
         public void AddUnit_AddedSuccesfully()
         {
             //arrange
-            Catalog catalog = new Catalog(new FakeStorage());
+            Mock<Storage> _mockStorage = new Mock<Storage>();
+            _mockStorage.Setup(s => s.LoadUnits()).Returns(new List<Unit>());
+            Catalog catalog = new(_mockStorage.Object);
+            //Catalog catalog = new Catalog(new FakeStorage());
 
             //act
             catalog.AddUnit("продукт", "опис", 100.5, 10);
@@ -32,7 +36,10 @@ namespace CatalogTests
         public void AddUnit_ValidData()
         {
             //arrange
-            Catalog catalog = new Catalog(new FakeStorage());
+            Mock<Storage> _mockStorage = new Mock<Storage>();
+            _mockStorage.Setup(s => s.LoadUnits()).Returns(new List<Unit>());
+            Catalog catalog = new(_mockStorage.Object);
+            //Catalog catalog = new Catalog(new FakeStorage());
             //act
             catalog.AddUnit("продукт", "опис", 100.5, 10);
 
@@ -45,21 +52,25 @@ namespace CatalogTests
         }
 
         [TestMethod]
-        public void TestMethod2() 
+        public void RemoveUnit_ShouldUnitDecreas_WhenUnitExists() 
         {
             //arrange
-            Catalog catalog = new Catalog(new FakeStorage());
+            Mock<Storage> _mockStorage = new Mock<Storage>();
+            _mockStorage.Setup(s => s.LoadUnits()).Returns(new List<Unit>());
+            Catalog catalog = new(_mockStorage.Object);
+            //Catalog catalog = new Catalog(new FakeStorage());
             catalog.AddUnit("продукт", "опис", 100.5, 10);
+            int count = catalog.Units.Count;
             //act
             catalog.RemoveUnit(10001);
             //assert
-            Assert.AreEqual(0, catalog.Units.Count);
+            Assert.AreEqual(count -1 , catalog.Units.Count);
         }
 
         
     
     }
-    public class FakeStorage : Storage
+    /*public class FakeStorage : Storage
     {
         //private List<Unit> _units = new List<Unit>();
         public override List<Unit> LoadUnits()
@@ -73,5 +84,5 @@ namespace CatalogTests
 
         //public void Clear() => _units.Clear();
 
-    }
+    }*/
 }
