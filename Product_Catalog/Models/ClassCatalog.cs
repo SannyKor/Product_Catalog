@@ -12,7 +12,7 @@ namespace ClassCatalog
         protected List<Unit> units = new List<Unit>();
         public IReadOnlyList<Unit> Units => units;
         //private int UnitId;
-        protected Storage storage = new StorageFromFile();
+        protected Storage storage;// = new StorageFromFile();
 
 
 

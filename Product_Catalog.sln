@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Product_Catalog", "Product_Catalog\Product_Catalog.csproj", "{C9F0DDFF-E84C-4B9A-982E-5BFF367C6982}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApp1", "WindowsFormsApp1\WindowsFormsApp1.csproj", "{DF18A5DD-FBAD-405B-846D-55781AB3F7BD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C9F0DDFF-E84C-4B9A-982E-5BFF367C6982} = {C9F0DDFF-E84C-4B9A-982E-5BFF367C6982}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogTests", "CatalogTests\CatalogTests.csproj", "{5261AF79-A1DA-495A-BC3B-B48CD1511792}"
 EndProject

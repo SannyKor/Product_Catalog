@@ -21,7 +21,7 @@ namespace Product_Catalog
 
     internal class Program
     {
-
+        [STAThread]
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.GetEncoding("windows-1251");

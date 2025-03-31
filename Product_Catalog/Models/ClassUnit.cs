@@ -10,10 +10,7 @@ namespace ClassCatalog
     public class Unit
     {
         
-        public Unit()
-        {
-             
-        }
+        
         public Unit(int Id)
         {
             this.Id = Id;             

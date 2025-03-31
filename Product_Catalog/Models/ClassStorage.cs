@@ -14,7 +14,7 @@ namespace ClassCatalog
         public abstract List<Unit> LoadUnits();
     }
 
-    class StorageFromFile: Storage
+    public class StorageFromFile: Storage
     {
         private const string FileName = "catalog.bin";
         public override void SaveUnits(List<Unit> units)
