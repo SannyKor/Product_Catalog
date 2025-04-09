@@ -166,7 +166,22 @@ namespace WindowsFormsApp1
 
         private void toolStripMenuItemDelUnit_Click(object sender, EventArgs e)
         {
+            if (dataGridView1.CurrentRow != null)
+            {
+                int id = Convert.ToInt32(dataGridView1.CurrentRow.Cells["Id"].Value);
 
+                DialogResult result = MessageBox.Show(
+                    $"Ви видаляете товар: \n\n{id}", "Підтвердження",
+                    MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    catalog.RemoveUnit(id);
+                    dataGridView1.Rows.RemoveAt(dataGridView1.CurrentRow.Index);
+                    dataGridView1.DataSource = null;
+                    dataGridView1.DataSource = catalog.Units;
+                    MessageBox.Show("Товар видалено");
+                }
+            }
         }
     }
 }
