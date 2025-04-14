@@ -6,42 +6,44 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Forms;
-using ClassCatalog;
 
 namespace WindowsFormsApp1
 {
-    public partial class AddUnitForm : Form
+    public partial class ChangeUnitForm : Form
     {
         public string unitName { get; set; }
         public string unitDescription { get; set; }
         public double unitPrice { get; set; }
-        public int unitQuantity { get; set; }
-
-        public AddUnitForm()
+        
+        public ChangeUnitForm()
         {
-            
             InitializeComponent();
         }
 
-        private void AddUnitForm_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void buttonAddUnit_Click(object sender, EventArgs e)
+        private void buttonChangeUnit_Click(object sender, EventArgs e)
         {
             unitName = textBoxName.Text;
             unitDescription = textBoxDescription.Text;
-            unitPrice = Convert.ToDouble(textBoxPrice.Text);
-            unitQuantity = Convert.ToInt32(textBoxQuantity.Text);
+            if (string.IsNullOrWhiteSpace(textBoxPrice.Text))
+            {
+                unitPrice = 0;
+            }
+            else
+            {
+                if (!double.TryParse(textBoxPrice.Text, out double parsedPrice))
+                {
+                    unitPrice = 0;
+                }
+                else
+                {
+                    unitPrice = parsedPrice;
+                }
+            }
+            
             this.DialogResult = DialogResult.OK;
             this.Close();
-        }
-
-        private void textBoxName_TextChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

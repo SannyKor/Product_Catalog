@@ -34,11 +34,8 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItemEditUnit = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemDelUnit = new System.Windows.Forms.ToolStripMenuItem();
-            this.button3 = new System.Windows.Forms.Button();
+            this.buttonAddUnit = new System.Windows.Forms.Button();
             this.textBoxIdSearch = new System.Windows.Forms.TextBox();
             this.labelId = new System.Windows.Forms.Label();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -80,7 +77,6 @@
             this.dataGridView1.RowTemplate.Height = 24;
             this.dataGridView1.Size = new System.Drawing.Size(934, 352);
             this.dataGridView1.TabIndex = 10;
-            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick_2);
             this.dataGridView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dataGridView1_MouseDown);
             // 
             // contextMenuStrip1
@@ -94,32 +90,10 @@
             // 
             // toolStripMenuItemEditUnit
             // 
-            this.toolStripMenuItemEditUnit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem3,
-            this.toolStripMenuItem4,
-            this.toolStripMenuItem5});
             this.toolStripMenuItemEditUnit.Name = "toolStripMenuItemEditUnit";
             this.toolStripMenuItemEditUnit.Size = new System.Drawing.Size(210, 24);
             this.toolStripMenuItemEditUnit.Text = "Редагувати";
             this.toolStripMenuItemEditUnit.Click += new System.EventHandler(this.toolStripMenuItemEditUnit_Click);
-            // 
-            // toolStripMenuItem3
-            // 
-            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(225, 26);
-            this.toolStripMenuItem3.Text = "toolStripMenuItem3";
-            // 
-            // toolStripMenuItem4
-            // 
-            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(225, 26);
-            this.toolStripMenuItem4.Text = "toolStripMenuItem4";
-            // 
-            // toolStripMenuItem5
-            // 
-            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(225, 26);
-            this.toolStripMenuItem5.Text = "toolStripMenuItem5";
             // 
             // toolStripMenuItemDelUnit
             // 
@@ -128,15 +102,15 @@
             this.toolStripMenuItemDelUnit.Text = "Видалити";
             this.toolStripMenuItemDelUnit.Click += new System.EventHandler(this.toolStripMenuItemDelUnit_Click);
             // 
-            // button3
+            // buttonAddUnit
             // 
-            this.button3.Location = new System.Drawing.Point(177, 12);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(123, 47);
-            this.button3.TabIndex = 11;
-            this.button3.Text = "Додати товар";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.buttonAddUnit.Location = new System.Drawing.Point(177, 12);
+            this.buttonAddUnit.Name = "buttonAddUnit";
+            this.buttonAddUnit.Size = new System.Drawing.Size(123, 47);
+            this.buttonAddUnit.TabIndex = 11;
+            this.buttonAddUnit.Text = "Додати товар";
+            this.buttonAddUnit.UseVisualStyleBackColor = true;
+            this.buttonAddUnit.Click += new System.EventHandler(this.buttonAddUnit_Click);
             // 
             // textBoxIdSearch
             // 
@@ -168,13 +142,12 @@
             this.ClientSize = new System.Drawing.Size(958, 559);
             this.Controls.Add(this.labelId);
             this.Controls.Add(this.textBoxIdSearch);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.buttonAddUnit);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.buttonSearch);
             this.Controls.Add(this.requestId_field);
             this.Name = "MainCatalogForm";
             this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -186,16 +159,13 @@
         private System.Windows.Forms.TextBox requestId_field;
         private System.Windows.Forms.Button buttonSearch;
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button buttonAddUnit;
         private System.Windows.Forms.TextBox textBoxIdSearch;
         private System.Windows.Forms.Label labelId;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemEditUnit;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemDelUnit;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
     }
 }
 

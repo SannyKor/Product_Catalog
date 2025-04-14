@@ -51,30 +51,7 @@ namespace WindowsFormsApp1
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Кількість", DataPropertyName = "Quantity", Name = "Quantity", Width = 75 });
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-        private void dataGridView1_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
-        {
-            
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void dataGridView1_CellContentClick_2(object sender, DataGridViewCellEventArgs e)
-        {
-           
-        }
+        
 
         private void buttonSearch_Click(object sender, EventArgs e)
         {
@@ -103,7 +80,7 @@ namespace WindowsFormsApp1
 
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void buttonAddUnit_Click(object sender, EventArgs e)
         {
             AddUnitForm addUnitForm = new AddUnitForm();
             if (addUnitForm.ShowDialog() == DialogResult.OK)
@@ -161,7 +138,32 @@ namespace WindowsFormsApp1
 
         private void toolStripMenuItemEditUnit_Click(object sender, EventArgs e)
         {
-
+            ChangeUnitForm changeUnitForm = new ChangeUnitForm();
+            if(changeUnitForm.ShowDialog() == DialogResult.OK)
+            {
+                if (dataGridView1 != null)
+                {
+                    int id = Convert.ToInt32(dataGridView1.CurrentRow.Cells["Id"].Value);
+                    Unit unit = catalog.GetUnitById(id);
+                    if (unit != null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(changeUnitForm.unitName))
+                        {                            
+                            unit.Name = changeUnitForm.unitName;
+                        }
+                        if (!string.IsNullOrWhiteSpace(changeUnitForm.unitDescription))
+                        {                           
+                            unit.Description = changeUnitForm.unitDescription;
+                        }
+                        if (changeUnitForm.unitPrice != 0)
+                        {                            
+                            unit.Price = changeUnitForm.unitPrice;
+                        }
+                        dataGridView1.DataSource = null;
+                        dataGridView1.DataSource = catalog.Units;
+                    }
+                }
+            }
         }
 
         private void toolStripMenuItemDelUnit_Click(object sender, EventArgs e)
@@ -175,11 +177,27 @@ namespace WindowsFormsApp1
                     MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
-                    catalog.RemoveUnit(id);
-                    dataGridView1.Rows.RemoveAt(dataGridView1.CurrentRow.Index);
+                    catalog.RemoveUnit(id);                    
                     dataGridView1.DataSource = null;
                     dataGridView1.DataSource = catalog.Units;
                     MessageBox.Show("Товар видалено");
+                }
+            }
+        }
+
+        private void toolStripMenuItemName_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.CurrentRow != null)
+            {
+                int id = Convert.ToInt32(dataGridView1.CurrentRow.Cells["Id"].Value);
+                Unit unit = catalog.GetUnitById(id);
+                if (unit != null)
+                {
+                    MessageBox.Show($"Назва товару: {unit.Name}");
+                }
+                else
+                {
+                    MessageBox.Show("Товар не знайдено");
                 }
             }
         }

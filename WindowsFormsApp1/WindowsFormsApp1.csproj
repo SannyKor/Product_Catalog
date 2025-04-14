@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChangeUnitForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChangeUnitForm.Designer.cs">
+      <DependentUpon>ChangeUnitForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainCatalogForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -62,6 +68,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="AddUnitForm.resx">
       <DependentUpon>AddUnitForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ChangeUnitForm.resx">
+      <DependentUpon>ChangeUnitForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainCatalogForm.resx">
       <DependentUpon>MainCatalogForm.cs</DependentUpon>
