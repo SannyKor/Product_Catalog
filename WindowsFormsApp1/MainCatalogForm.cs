@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClassCatalog;
 using System.IO;
+using Product_Catalog.Models;
 
 namespace WindowsFormsApp1
 {
@@ -19,7 +20,7 @@ namespace WindowsFormsApp1
         public MainCatalogForm()
         {
             
-            catalog = new Catalog(new StorageFromFile());
+            catalog = new Catalog(new SqliteStorage());
             InitializeComponent();
             SetupDataGridView();
 
