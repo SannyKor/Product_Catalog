@@ -52,6 +52,12 @@
     <Compile Include="ChangeUnitForm.Designer.cs">
       <DependentUpon>ChangeUnitForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="RegisterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RegisterForm.Designer.cs">
+      <DependentUpon>RegisterForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainCatalogForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -84,6 +90,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="RegisterForm.resx">
+      <DependentUpon>RegisterForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -98,10 +107,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CatalogTests\CatalogTests.csproj">
-      <Project>{5261af79-a1da-495a-bc3b-b48cd1511792}</Project>
-      <Name>CatalogTests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Product_Catalog\Product_Catalog.csproj">
       <Project>{c9f0ddff-e84c-4b9a-982e-5bff367c6982}</Project>
       <Name>Product_Catalog</Name>

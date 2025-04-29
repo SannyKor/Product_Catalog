@@ -14,7 +14,7 @@ namespace ClassCatalog
         public abstract List<Unit> LoadUnits();
     }
 
-    public class StorageFromFile: Storage
+    public class StorageFromFile : Storage
     {
         private const string FileName = "catalog.bin";
         public override void SaveUnits(List<Unit> units)
@@ -60,7 +60,7 @@ namespace ClassCatalog
                         {
                             Unit unit = new Unit(reader.ReadInt32())
                             {
-                                
+
                                 Name = reader.ReadString(),
                                 Description = reader.ReadString(),
                                 Price = reader.ReadDouble(),

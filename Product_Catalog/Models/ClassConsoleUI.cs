@@ -97,9 +97,9 @@ namespace ClassCatalog
 
 
                 Console.WriteLine("змініть ціну або натисніть enter щоб продовжити: ");
-                if (double.TryParse(Console.ReadLine(), out double price))
+                if (double.TryParse(Console.ReadLine(), out double parsedPrice))
                 {
-                    unit.Price = price;
+                    unit.Price = parsedPrice;
                 }
 
                 Console.WriteLine("введіть новий опис або enter щоб продовжити без змін: ");

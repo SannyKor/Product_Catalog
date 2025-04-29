@@ -147,18 +147,15 @@ namespace WindowsFormsApp1
                     Unit unit = catalog.GetUnitById(id);
                     if (unit != null)
                     {
-                        if (!string.IsNullOrWhiteSpace(changeUnitForm.unitName))
-                        {                            
+                        if (!string.IsNullOrWhiteSpace(changeUnitForm.unitName))                                                    
                             unit.Name = changeUnitForm.unitName;
-                        }
-                        if (!string.IsNullOrWhiteSpace(changeUnitForm.unitDescription))
-                        {                           
+                        
+                        if (!string.IsNullOrWhiteSpace(changeUnitForm.unitDescription))                                                   
                             unit.Description = changeUnitForm.unitDescription;
-                        }
-                        if (changeUnitForm.unitPrice != 0)
-                        {                            
+                        
+                        if (changeUnitForm.unitPrice != 0)                                                    
                             unit.Price = changeUnitForm.unitPrice;
-                        }
+                        
                         dataGridView1.DataSource = null;
                         dataGridView1.DataSource = catalog.Units;
                     }

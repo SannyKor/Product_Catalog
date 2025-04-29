@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,9 @@ namespace ClassCatalog
 {
     public class Catalog
     {
+        
+    
+
         protected List<Unit> units = new List<Unit>();
         public IReadOnlyList<Unit> Units => units;
         //private int UnitId;
