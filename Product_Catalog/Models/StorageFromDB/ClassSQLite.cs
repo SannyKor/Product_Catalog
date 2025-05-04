@@ -16,5 +16,13 @@ namespace ClassCatalog
         {
             return new SQLiteConnection(connectionString);
         }
+
+        public static void ExecuteSql (string sql, SQLiteConnection connection)
+        {
+            using (var command = new SQLiteCommand(sql, connection))
+            {
+                command.ExecuteNonQuery();
+            }
+        }
     }
 }

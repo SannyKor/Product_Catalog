@@ -9,12 +9,12 @@ namespace ClassCatalog
 {
     public class Unit
     {
-        
-        
-        public Unit(int Id)
-        {
-            this.Id = Id;             
-        }
+
+
+        //public Unit(int Id)
+        //{
+        //    this.Id = Id;
+        //}
         public int Id { get; protected set; }
         public string Name { get; set; }
         public string Description { get; set; }

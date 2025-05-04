@@ -15,20 +15,37 @@ namespace ClassCatalog
             using (var connection = Sqlite.GetConnection()) 
             {
                 connection.Open();
-                string createTableSql = @"
-                        CREATE TABLE IF NOT EXISTS units (
-                        id INTEGER PRIMERY AUTOINCREMENT,
+                string createTableCatalogSql = @"
+                    CREATE TABLE IF NOT EXISTS units (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
                         name TEXT NOT NULL,
                         description TEXT,
                         price REAL NOT NULL,
                         quantity INTEGER NOT NULL,
                         added_data TEXT NOT NULL
                         );";
-                using (var command = new SQLiteCommand(createTableSql, connection))
+
+                string createTableQuantityHistory = @"
+                    CREATE TABLE IF NOT EXISTS quantity_history (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        unit_id INTEGER NOT NULL,
+                        new_quantity INTEGER NOT NULL,
+                        change_time TEXT NOT NULL,
+                        FORING KEY (unit_id) REFERRENCES units(id)
+                        );";
+
+                using (var command = new SQLiteCommand(createTableCatalogSql, connection))
                 {
                     command.ExecuteNonQuery();
                 }
+                using (var command = new SQLiteCommand(createTableQuantityHistory, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                EnsureStartId("units", 10000, connection);
             }
+
         }
         public override void SaveUnits(List<Unit> units)
         {
@@ -54,7 +71,7 @@ namespace ClassCatalog
                         double price = Convert.ToDouble(reader["price"]);
                         int quantity = Convert.ToInt32(reader["quantity"]);
 
-                        Unit unit = new Unit(id);
+                        Unit unit = new Unit();
                         unit.Name = name;
                         unit.Description = discription;
                         unit.Price = price;
@@ -65,6 +82,24 @@ namespace ClassCatalog
                 }
             }
             return units;
+        }
+        private void EnsureStartId (string tableName, int startFromId, SQLiteConnection connection)
+        {
+            string countSql = $"SELECT COUNT (*) FROM {tableName}";
+            using (var countCmd = new SQLiteCommand(countSql, connection))
+            {
+                long count = (long)countCmd.ExecuteScalar();
+                if ( count ==0 )
+                {
+                    string deleteSql = $"DELETE FROM sqlite_sequence WHERE name='{tableName}'";
+                    using (var deleteCmd = new SQLiteCommand(deleteSql, connection))
+                        deleteCmd.ExecuteNonQuery();
+
+                    string insertSql = $"INCERT INTO sqlite_sequence (name, seq) VALUES ('{tableName}', {startFromId})";
+                    using (var insertSmd = new SQLiteCommand(insertSql, connection))
+                        insertSmd.ExecuteNonQuery();
+                }
+            }
         }
 
     }

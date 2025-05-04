@@ -28,21 +28,44 @@ namespace ClassCatalog
             
         }
 
-        protected int GetNextId()
-        {
-            return units.Count > 0 ? units[units.Count - 1].Id + 1 : 10001;
-        }
+        //protected int GetNextId()
+        //{
+        //    return units.Count > 0 ? units[units.Count - 1].Id + 1 : 10001;
+        //}
 
         public void AddUnit(string name, string description, double price, int quantity)
         {
-            Unit unit = new Unit(GetNextId()) { Name = name, Description = description, Price = price, Quantity = quantity };
+            //Unit unit = new Unit(GetNextId()) { Name = name, Description = description, Price = price, Quantity = quantity };
+            Unit unit = new Unit() { Name = name, Description = description, Price = price, Quantity = quantity };
 
             units.Add(unit);
             DateTime time = DateTime.Now;
             unit.QuantityHistory.Add($"час: {time}:\t{quantity};");
             Console.WriteLine("Товар додадно.\n");
             unit.AddedDate = time;
-
+            using (var connection = Sqlite.GetConnection())
+            {
+                connection.Open();
+                string insertSql = "INSERT INTO units (name, description, price, quntity) VALUES (@name, @description, @price, @quantity)";
+                using (var command = new SQLiteCommand(insertSql, connection))
+                {
+                    command.Parameters.AddWithValue("@name", unit.Name);
+                    command.Parameters.AddWithValue("@description", unit.Description);
+                    command.Parameters.AddWithValue("@price", unit.Price);
+                    command.Parameters.AddWithValue("@quantity", unit.Quantity);
+                    command.Parameters.AddWithValue("@added_data", time.ToString());
+                    command.ExecuteNonQuery();
+                }
+                string insertSqlChangeQuantity = "INSERT INTO quantity_history (unit_id, new_quantity, change_time) VALUES (@unit_id, new_quantity, change_time)";
+                using (var command = new SQLiteCommand(insertSqlChangeQuantity, connection))
+                {
+                    command.Parameters.AddWithValue("@unit_id", unit.Id);
+                    command.Parameters.AddWithValue("@new_quantity", unit.Quantity);
+                    command.Parameters.AddWithValue("@change_time", time.ToString());
+                    command.ExecuteNonQuery();
+                }
+            }
+            
         }
         public Unit GetUnitById(int id)
         {
