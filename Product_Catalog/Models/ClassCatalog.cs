@@ -4,6 +4,7 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClassCatalog;
 
 
 namespace ClassCatalog
@@ -24,8 +25,7 @@ namespace ClassCatalog
         public Catalog(Storage storage)
         {
             this.storage = storage;
-            units = storage.LoadUnits();
-            
+            units = storage.LoadUnits();            
         }
 
         //protected int GetNextId()
@@ -69,35 +69,104 @@ namespace ClassCatalog
         }
         public Unit GetUnitById(int id)
         {
-            Unit unit = units.Find(u => u.Id == id);
-            return unit;
+            //Unit unit = units.Find(u => u.Id == id);
+            using (var connection = new SQLiteConnection(Sqlite.GetConnection()))
+            {
+                connection.Open();
+                string sql = "SELECT * FROM units WHERE id = @id";
+                using (var command = new SQLiteCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Unit()
+                            {           
+                                Id = Convert.ToInt32(reader["id"]),
+                                Name = Convert.ToString(reader["name"]),
+                                Description = Convert.ToString(reader["description"]),
+                                Price = Convert.ToInt32(reader["price"]),
+                                Quantity = Convert.ToInt32(reader["quantity"]),
+                            };
+                        }
+                    }
+                }
+            }
+            return null;            
         }
 
 
         public bool RemoveUnit(int id)
         {
             Unit unit = GetUnitById(id);
-            /*if (unit == null)
+            if (unit == null)
             {
                 return false;
-            }*/
+            }
 
-            return units.Remove(unit);
-
-
+            using (var connection = new SQLiteConnection(Sqlite.GetConnection()))
+            {
+                connection.Open();
+                string deleteSql = "DELETE FROM units WHERE id=@id";
+                using (var command = new SQLiteCommand(deleteSql, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    command.ExecuteNonQuery();
+                }
+                string historySql = @"
+                    INSERT INTO quantity_history (unit_id, new_quantity, change_time)
+                    VALUES (@unit_id, @new_quantity, @change_time)";
+                using (var command = new SQLiteCommand(historySql, connection))
+                {
+                    command.Parameters.AddWithValue("@unit_id", unit.Id);
+                    command.Parameters.AddWithValue("@new_quantity", 0);
+                    command.Parameters.AddWithValue("@change_time", DateTime.Now.ToString("yyyy-mm-dd HH:mm:ss"));
+                    command.ExecuteNonQuery();
+                }
+            }
+                return units.Remove(unit);
         }
     
         
-        public List<Unit> FindUnit(string Query)
+        public List<Unit> FindUnit(string query)
         {
-            var found = units.FindAll(u => u.Name.IndexOf(Query, StringComparison.OrdinalIgnoreCase) >= 0);
-            return found;
+            /*var found = units
+                .FindAll(u => u.Name.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
+                .OrderBy(u => u.Id).ToList();
+            return found;*/
+            var foundResults = new List<Unit>();
+            using (var connection = Sqlite.GetConnection())
+            {
+                connection.Open();
+                string sql = "SELECT * FROM units WHERE name LIKE @search COLLATE NOCASE";
+                using (var command = new SQLiteCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@search", "%" + query + "%");
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while(reader.Read())
+                        {
+                            var unit = new Unit()
+                            {
+                                Id = Convert.ToInt32(reader["id"]),
+                                Name = Convert.ToString(reader["name"]),
+                                Description = Convert.ToString(reader["description"]),
+                                Quantity = Convert.ToInt32(reader ["quantity"]),
+                                Price = Convert.ToDouble(reader["price"])
+                            };
+                            foundResults.Add(unit);
+                        }
+                    }
+                }
 
+            }
+            return foundResults;
         }
 
         ~Catalog()
         {
-            storage.SaveUnits(units);
+            //storage.SaveUnits(units);
         }
     }
 }

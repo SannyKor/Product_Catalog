@@ -11,11 +11,13 @@ namespace ClassCatalog
     {
 
 
-        //public Unit(int Id)
-        //{
-        //    this.Id = Id;
-        //}
-        public int Id { get; protected set; }
+        public Unit(int Id)
+        {
+            this.Id = Id;
+        }
+        public Unit() { }
+        
+        public int Id { get; /*protected*/ set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public double Price { get; set; }
