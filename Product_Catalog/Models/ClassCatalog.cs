@@ -46,7 +46,9 @@ namespace ClassCatalog
             using (var connection = Sqlite.GetConnection())
             {
                 connection.Open();
-                string insertSql = "INSERT INTO units (name, description, price, quntity) VALUES (@name, @description, @price, @quantity)";
+                string insertSql = @"INSERT INTO units (name, description, price, quntity) 
+                                    VALUES (@name, @description, @price, @quantity, @added_data);
+                                    SELECT last_insert_rowid()";
                 using (var command = new SQLiteCommand(insertSql, connection))
                 {
                     command.Parameters.AddWithValue("@name", unit.Name);
@@ -55,6 +57,8 @@ namespace ClassCatalog
                     command.Parameters.AddWithValue("@quantity", unit.Quantity);
                     command.Parameters.AddWithValue("@added_data", time.ToString());
                     command.ExecuteNonQuery();
+                                        
+                    unit.Id = Convert.ToInt32(command.ExecuteScalar());
                 }
                 string insertSqlChangeQuantity = "INSERT INTO quantity_history (unit_id, new_quantity, change_time) VALUES (@unit_id, new_quantity, change_time)";
                 using (var command = new SQLiteCommand(insertSqlChangeQuantity, connection))
