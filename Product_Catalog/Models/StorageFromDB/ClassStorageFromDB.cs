@@ -70,12 +70,14 @@ namespace ClassCatalog
                         string discription = Convert.ToString(reader["description"]);
                         double price = Convert.ToDouble(reader["price"]);
                         int quantity = Convert.ToInt32(reader["quantity"]);
+                        DateTime addedDate = Convert.ToDateTime(reader["added_date"]);
 
-                        Unit unit = new Unit();
+                        Unit unit = new Unit(id);
                         unit.Name = name;
                         unit.Description = discription;
                         unit.Price = price;
                         unit.Quantity = quantity;
+                        unit.AddedDate = addedDate;
 
                         units.Add(unit);
                     }

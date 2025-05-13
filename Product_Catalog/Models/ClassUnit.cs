@@ -17,7 +17,7 @@ namespace ClassCatalog
         }
         public Unit() { }
         
-        public int Id { get; /*protected*/ set; }
+        public int Id { get; protected set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public double Price { get; set; }

@@ -36,13 +36,13 @@ namespace ClassCatalog
         public void AddUnit(string name, string description, double price, int quantity)
         {
             //Unit unit = new Unit(GetNextId()) { Name = name, Description = description, Price = price, Quantity = quantity };
-            Unit unit = new Unit() { Name = name, Description = description, Price = price, Quantity = quantity };
+            Unit tempUnit = new Unit() { Name = name, Description = description, Price = price, Quantity = quantity };
 
-            units.Add(unit);
-            DateTime time = DateTime.Now;
-            unit.QuantityHistory.Add($"час: {time}:\t{quantity};");
+            int getId;
+            
+            
             Console.WriteLine("Товар додадно.\n");
-            unit.AddedDate = time;
+            
             using (var connection = Sqlite.GetConnection())
             {
                 connection.Open();
@@ -51,25 +51,33 @@ namespace ClassCatalog
                                     SELECT last_insert_rowid()";
                 using (var command = new SQLiteCommand(insertSql, connection))
                 {
-                    command.Parameters.AddWithValue("@name", unit.Name);
-                    command.Parameters.AddWithValue("@description", unit.Description);
-                    command.Parameters.AddWithValue("@price", unit.Price);
-                    command.Parameters.AddWithValue("@quantity", unit.Quantity);
-                    command.Parameters.AddWithValue("@added_data", time.ToString());
+                    command.Parameters.AddWithValue("@name", tempUnit.Name);
+                    command.Parameters.AddWithValue("@description", tempUnit.Description);
+                    command.Parameters.AddWithValue("@price", tempUnit.Price);
+                    command.Parameters.AddWithValue("@quantity", tempUnit.Quantity);
+                    command.Parameters.AddWithValue("@added_data", tempUnit.AddedDate.ToString());
                     command.ExecuteNonQuery();
-                                        
-                    unit.Id = Convert.ToInt32(command.ExecuteScalar());
+                    getId = Convert.ToInt32(command.ExecuteScalar());
                 }
+                Unit unit = new Unit(getId)
+                {
+                    Name = tempUnit.Name,
+                    Description = tempUnit.Description,
+                    Price = tempUnit.Price,
+                    Quantity = tempUnit.Quantity                     
+                };
+                unit.QuantityHistory.Add($"час: {tempUnit.AddedDate}:\t{quantity};");
+                units.Add(unit);
+
                 string insertSqlChangeQuantity = "INSERT INTO quantity_history (unit_id, new_quantity, change_time) VALUES (@unit_id, new_quantity, change_time)";
                 using (var command = new SQLiteCommand(insertSqlChangeQuantity, connection))
                 {
                     command.Parameters.AddWithValue("@unit_id", unit.Id);
                     command.Parameters.AddWithValue("@new_quantity", unit.Quantity);
-                    command.Parameters.AddWithValue("@change_time", time.ToString());
+                    command.Parameters.AddWithValue("@change_time", unit.AddedDate.ToString());
                     command.ExecuteNonQuery();
                 }
-            }
-            
+            }            
         }
         public Unit GetUnitById(int id)
         {
@@ -85,9 +93,8 @@ namespace ClassCatalog
                     {
                         if (reader.Read())
                         {
-                            return new Unit()
-                            {           
-                                Id = Convert.ToInt32(reader["id"]),
+                            return new Unit(Convert.ToInt32(reader["id"]))
+                            {   
                                 Name = Convert.ToString(reader["name"]),
                                 Description = Convert.ToString(reader["description"]),
                                 Price = Convert.ToInt32(reader["price"]),
@@ -151,9 +158,8 @@ namespace ClassCatalog
                     {
                         while(reader.Read())
                         {
-                            var unit = new Unit()
+                            var unit = new Unit(Convert.ToInt32(reader["id"]))
                             {
-                                Id = Convert.ToInt32(reader["id"]),
                                 Name = Convert.ToString(reader["name"]),
                                 Description = Convert.ToString(reader["description"]),
                                 Quantity = Convert.ToInt32(reader ["quantity"]),
