@@ -5,12 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ClassCatalog;
+using System.IO;
+
 
 namespace ClassCatalog
 {
-    public class ClassStorageFromDB : Storage
+    public class StorageFromDB : Storage
     {
-        public ClassStorageFromDB() 
+        public StorageFromDB() 
         {            
             using (var connection = Sqlite.GetConnection()) 
             {
@@ -22,7 +24,7 @@ namespace ClassCatalog
                         description TEXT,
                         price REAL NOT NULL,
                         quantity INTEGER NOT NULL,
-                        added_data TEXT NOT NULL
+                        added_date TEXT NOT NULL
                         );";
 
                 string createTableQuantityHistory = @"
@@ -31,7 +33,7 @@ namespace ClassCatalog
                         unit_id INTEGER NOT NULL,
                         new_quantity INTEGER NOT NULL,
                         change_time TEXT NOT NULL,
-                        FORING KEY (unit_id) REFERRENCES units(id)
+                        FOREIGN KEY (unit_id) REFERENCES units(id)
                         );";
 
                 using (var command = new SQLiteCommand(createTableCatalogSql, connection))
@@ -97,7 +99,7 @@ namespace ClassCatalog
                     using (var deleteCmd = new SQLiteCommand(deleteSql, connection))
                         deleteCmd.ExecuteNonQuery();
 
-                    string insertSql = $"INCERT INTO sqlite_sequence (name, seq) VALUES ('{tableName}', {startFromId})";
+                    string insertSql = $"INSERT INTO sqlite_sequence (name, seq) VALUES ('{tableName}', {startFromId})";
                     using (var insertSmd = new SQLiteCommand(insertSql, connection))
                         insertSmd.ExecuteNonQuery();
                 }

@@ -19,7 +19,7 @@ namespace WindowsFormsApp1
         public MainCatalogForm()
         {
             
-            catalog = new Catalog(new StorageFromFile());
+            catalog = new Catalog(new StorageFromDB());
             InitializeComponent();
             SetupDataGridView();
 
