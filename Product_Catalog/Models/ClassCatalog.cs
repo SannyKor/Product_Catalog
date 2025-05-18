@@ -49,7 +49,7 @@ namespace ClassCatalog
                 connection.Open();
                 string insertSql = @"INSERT INTO units (name, description, price, quantity, added_date) 
                                     VALUES (@name, @description, @price, @quantity, @added_date);
-                                    SELECT last_insert_rowid()";
+                                    ";
                 using (var command = new SQLiteCommand(insertSql, connection))
                 {
                     command.Parameters.AddWithValue("@name", tempUnit.Name);
@@ -58,7 +58,11 @@ namespace ClassCatalog
                     command.Parameters.AddWithValue("@quantity", tempUnit.Quantity);
                     command.Parameters.AddWithValue("@added_date", tempUnit.AddedDate.ToString());
                     command.ExecuteNonQuery();
-                    getId = Convert.ToInt32(command.ExecuteScalar());
+                    
+                }
+                using (var getIdCommand = new SQLiteCommand("SELECT last_insert_rowid()", connection))
+                {
+                    getId = Convert.ToInt32(getIdCommand.ExecuteScalar());
                 }
                 Unit unit = new Unit(getId)
                 {
@@ -85,7 +89,7 @@ namespace ClassCatalog
         public Unit GetUnitById(int id)
         {
             //Unit unit = units.Find(u => u.Id == id);
-            using (var connection = new SQLiteConnection(Sqlite.GetConnection()))
+            using (var connection = Sqlite.GetConnection())
             {
                 connection.Open();
                 string sql = "SELECT * FROM units WHERE id = @id";
@@ -96,13 +100,8 @@ namespace ClassCatalog
                     {
                         if (reader.Read())
                         {
-                            return new Unit(Convert.ToInt32(reader["id"]))
-                            {   
-                                Name = Convert.ToString(reader["name"]),
-                                Description = Convert.ToString(reader["description"]),
-                                Price = Convert.ToInt32(reader["price"]),
-                                Quantity = Convert.ToInt32(reader["quantity"]),
-                            };
+                            Unit unit = units.Find(u => u.Id == id);
+                            return unit;
                         }
                     }
                 }
@@ -119,7 +118,7 @@ namespace ClassCatalog
                 return false;
             }
 
-            using (var connection = new SQLiteConnection(Sqlite.GetConnection()))
+            using (var connection = Sqlite.GetConnection())
             {
                 connection.Open();
                 string deleteSql = "DELETE FROM units WHERE id=@id";
@@ -135,7 +134,7 @@ namespace ClassCatalog
                 {
                     command.Parameters.AddWithValue("@unit_id", unit.Id);
                     command.Parameters.AddWithValue("@new_quantity", 0);
-                    command.Parameters.AddWithValue("@change_time", DateTime.Now.ToString("yyyy-mm-dd HH:mm:ss"));
+                    command.Parameters.AddWithValue("@change_time", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                     command.ExecuteNonQuery();
                 }
             }
