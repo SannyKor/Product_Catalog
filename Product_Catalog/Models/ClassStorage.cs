@@ -12,6 +12,7 @@ namespace ClassCatalog
     {
         public abstract void SaveUnits(List<Unit> units);
         public abstract List<Unit> LoadUnits();
+        public abstract Unit InsertUnit(string name, string description, double price, int quantity);
     }
 
     public class StorageFromFile : Storage
@@ -78,6 +79,10 @@ namespace ClassCatalog
                 }
             }
             return units;
+        }
+        public override Unit InsertUnit(string name, string description, double price, int quantity)
+        {
+            throw new NotImplementedException();
         }
     }
 }

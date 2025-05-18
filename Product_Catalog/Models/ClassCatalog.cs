@@ -36,55 +36,10 @@ namespace ClassCatalog
         public void AddUnit(string name, string description, double price, int quantity)
         {
             //Unit unit = new Unit(GetNextId()) { Name = name, Description = description, Price = price, Quantity = quantity };
-            Unit tempUnit = new Unit() { 
-                    Name = name, 
-                    Description = description, 
-                    Price = price, 
-                    Quantity = quantity };
+            Unit unit = storage.InsertUnit(name, description, price, quantity);
 
-            int getId;
-            
-            using (var connection = Sqlite.GetConnection())
-            {
-                connection.Open();
-                string insertSql = @"INSERT INTO units (name, description, price, quantity, added_date) 
-                                    VALUES (@name, @description, @price, @quantity, @added_date);
-                                    ";
-                using (var command = new SQLiteCommand(insertSql, connection))
-                {
-                    command.Parameters.AddWithValue("@name", tempUnit.Name);
-                    command.Parameters.AddWithValue("@description", tempUnit.Description);
-                    command.Parameters.AddWithValue("@price", tempUnit.Price);
-                    command.Parameters.AddWithValue("@quantity", tempUnit.Quantity);
-                    command.Parameters.AddWithValue("@added_date", tempUnit.AddedDate.ToString());
-                    command.ExecuteNonQuery();
-                    
-                }
-                using (var getIdCommand = new SQLiteCommand("SELECT last_insert_rowid()", connection))
-                {
-                    getId = Convert.ToInt32(getIdCommand.ExecuteScalar());
-                }
-                Unit unit = new Unit(getId)
-                {
-                    Name = tempUnit.Name,
-                    Description = tempUnit.Description,
-                    Price = tempUnit.Price,
-                    Quantity = tempUnit.Quantity                     
-                };
-                unit.QuantityHistory.Add($"час: {tempUnit.AddedDate}:\t{quantity};");
-                units.Add(unit);
+            units.Add(unit);
 
-                string insertSqlChangeQuantity = @"
-                                    INSERT INTO quantity_history (unit_id, new_quantity, change_time) 
-                                    VALUES (@unit_id, @new_quantity, @change_time)";
-                using (var command = new SQLiteCommand(insertSqlChangeQuantity, connection))
-                {
-                    command.Parameters.AddWithValue("@unit_id", unit.Id);
-                    command.Parameters.AddWithValue("@new_quantity", unit.Quantity);
-                    command.Parameters.AddWithValue("@change_time", unit.AddedDate.ToString());
-                    command.ExecuteNonQuery();
-                }
-            }            
         }
         public Unit GetUnitById(int id)
         {

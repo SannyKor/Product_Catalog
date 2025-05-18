@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ClassCatalog;
 using System.IO;
+using System.Data;
 
 
 namespace ClassCatalog
@@ -86,6 +87,56 @@ namespace ClassCatalog
                 }
             }
             return units;
+        }
+        public override Unit InsertUnit(string name, string description, double price, int quantity)
+        {
+            int getId;
+            DateTime addedDate = DateTime.Now;
+
+            using (var connection = Sqlite.GetConnection())
+            {
+                connection.Open();
+                string insertSql = @"INSERT INTO units (name, description, price, quantity, added_date) 
+                                    VALUES (@name, @description, @price, @quantity, @added_date);
+                                    ";
+                using (var command = new SQLiteCommand(insertSql, connection))
+                {
+                    command.Parameters.AddWithValue("@name", name);
+                    command.Parameters.AddWithValue("@description", description);
+                    command.Parameters.AddWithValue("@price", price);
+                    command.Parameters.AddWithValue("@quantity", quantity);
+                    command.Parameters.AddWithValue("@added_date", addedDate.ToString());
+                    command.ExecuteNonQuery();
+
+                }
+                using (var getIdCommand = new SQLiteCommand("SELECT last_insert_rowid()", connection))
+                {
+                    getId = Convert.ToInt32(getIdCommand.ExecuteScalar());
+                }
+                Unit unit = new Unit(getId)
+                {
+                    Name = name,
+                    Description = description,
+                    Price = price,
+                    Quantity = quantity,
+                    AddedDate = addedDate
+                };
+                unit.QuantityHistory.Add($"час: {addedDate}:\t{quantity};");
+                
+
+                string insertSqlChangeQuantity = @"
+                                    INSERT INTO quantity_history (unit_id, new_quantity, change_time) 
+                                    VALUES (@unit_id, @new_quantity, @change_time)";
+                using (var command = new SQLiteCommand(insertSqlChangeQuantity, connection))
+                {
+                    command.Parameters.AddWithValue("@unit_id", unit.Id);
+                    command.Parameters.AddWithValue("@new_quantity", unit.Quantity);
+                    command.Parameters.AddWithValue("@change_time", unit.AddedDate.ToString());
+                    command.ExecuteNonQuery();
+                }
+                return unit;
+            }
+            
         }
         private void EnsureStartId (string tableName, int startFromId, SQLiteConnection connection)
         {
