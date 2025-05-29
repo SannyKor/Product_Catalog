@@ -37,63 +37,26 @@ namespace ClassCatalog
         {
             //Unit unit = new Unit(GetNextId()) { Name = name, Description = description, Price = price, Quantity = quantity };
             Unit unit = storage.InsertUnit(name, description, price, quantity);
-
+            var saveQuantityHistory = new Unit.SaveQuantityChange(unit.Id, unit.Quantity, DateTime.Now);
+            unit.QuantityHistory.Add(saveQuantityHistory);
             units.Add(unit);
 
         }
         public Unit GetUnitById(int id)
         {
             //Unit unit = units.Find(u => u.Id == id);
-            using (var connection = Sqlite.GetConnection())
-            {
-                connection.Open();
-                string sql = "SELECT * FROM units WHERE id = @id";
-                using (var command = new SQLiteCommand(sql, connection))
-                {
-                    command.Parameters.AddWithValue("@id", id);
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            Unit unit = units.Find(u => u.Id == id);
-                            return unit;
-                        }
-                    }
-                }
-            }
-            return null;            
+            return storage.GetUnitById(id);                        
         }
 
 
         public bool RemoveUnit(int id)
         {
-            Unit unit = GetUnitById(id);
+            Unit unit = units.Find(u => u.Id == id);
             if (unit == null)
             {
                 return false;
-            }
-
-            using (var connection = Sqlite.GetConnection())
-            {
-                connection.Open();
-                string deleteSql = "DELETE FROM units WHERE id=@id";
-                using (var command = new SQLiteCommand(deleteSql, connection))
-                {
-                    command.Parameters.AddWithValue("@id", id);
-                    command.ExecuteNonQuery();
-                }
-                string historySql = @"
-                    INSERT INTO quantity_history (unit_id, new_quantity, change_time)
-                    VALUES (@unit_id, @new_quantity, @change_time)";
-                using (var command = new SQLiteCommand(historySql, connection))
-                {
-                    command.Parameters.AddWithValue("@unit_id", unit.Id);
-                    command.Parameters.AddWithValue("@new_quantity", 0);
-                    command.Parameters.AddWithValue("@change_time", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                    command.ExecuteNonQuery();
-                }
-            }
-                return units.Remove(unit);
+            }            
+                return storage.RemoveUnit(id) && units.Remove(unit);
         }
     
         
@@ -103,55 +66,24 @@ namespace ClassCatalog
                 .FindAll(u => u.Name.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
                 .OrderBy(u => u.Id).ToList();
             return found;*/
-            var foundResults = new List<Unit>();
-            using (var connection = Sqlite.GetConnection())
-            {
-                connection.Open();
-                string sql = "SELECT * FROM units WHERE name LIKE @search COLLATE NOCASE";
-                using (var command = new SQLiteCommand(sql, connection))
-                {
-                    command.Parameters.AddWithValue("@search", "%" + query + "%");
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while(reader.Read())
-                        {
-                            var unit = new Unit(Convert.ToInt32(reader["id"]))
-                            {
-                                Name = Convert.ToString(reader["name"]),
-                                Description = Convert.ToString(reader["description"]),
-                                Quantity = Convert.ToInt32(reader ["quantity"]),
-                                Price = Convert.ToDouble(reader["price"])
-                            };
-                            foundResults.Add(unit);
-                        }
-                    }
-                }
-
-            }
-            return foundResults;
+            return storage.FindUnit(query);
         }
         public void UpdateUnit (Unit unit)
-        {
-            using (var connection = Sqlite.GetConnection())
-            {
-                connection.Open();
-                string updateSql = @"UPDATE units SET 
-                                    name = @name,
-                                    description = @description,
-                                    price = @price,
-                                    quantity = @quantity,
-                                WHERE id = @id";
-                using (var command = new SQLiteCommand(updateSql, connection))
-                {
-                    command.Parameters.AddWithValue("@name", unit.Name);
-                    command.Parameters.AddWithValue("@description", unit.Description);
-                    command.Parameters.AddWithValue("@price", unit.Price);
-                    command.Parameters.AddWithValue("@quantity", unit.Quantity);
-                    command.Parameters.AddWithValue("@id", unit.Id);
+        {      
+            int id = unit.Id;
+            storage.UpdateUnit(unit);
+            Unit updatingUnitInList = units.Find(u => u.Id == id);
+            updatingUnitInList.Name = unit.Name;
+            updatingUnitInList.Price = unit.Price;
+            updatingUnitInList.Quantity = unit.Quantity;
+            updatingUnitInList.Description = unit.Description;
 
-                    command.ExecuteNonQuery();
-                }
-            }
+            var saveQuantityHistory = new Unit.SaveQuantityChange(unit.Id, unit.Quantity, DateTime.Now);
+            unit.QuantityHistory.Add(saveQuantityHistory);
+        }
+        public List<Unit.SaveQuantityChange> GetUnitQuantityHistory(int id)
+        {
+            return storage.GetUnitQuantityHistory(id);
         }
 
         ~Catalog()

@@ -13,6 +13,11 @@ namespace ClassCatalog
         public abstract void SaveUnits(List<Unit> units);
         public abstract List<Unit> LoadUnits();
         public abstract Unit InsertUnit(string name, string description, double price, int quantity);
+        public abstract Unit GetUnitById(int id);
+        public abstract bool RemoveUnit(int id);
+        public abstract void UpdateUnit(Unit unit);
+        public abstract List<Unit> FindUnit(string query);
+        public abstract List<Unit.SaveQuantityChange> GetUnitQuantityHistory(int id);
     }
 
     public class StorageFromFile : Storage
@@ -38,7 +43,7 @@ namespace ClassCatalog
                         writer.Write(unit.QuantityHistory.Count);
                         foreach (var history in unit.QuantityHistory)
                         {
-                            writer.Write(history);
+                            //writer.Write(history);
                         }
                     }
                 }
@@ -71,7 +76,7 @@ namespace ClassCatalog
                             int historyCount = reader.ReadInt32();
                             for (int j = 0; j < historyCount; j++)
                             {
-                                unit.QuantityHistory.Add(reader.ReadString());
+                                //unit.QuantityHistory.Add(reader.ReadString());
                             }
                             units.Add(unit);
                         }
@@ -84,5 +89,17 @@ namespace ClassCatalog
         {
             throw new NotImplementedException();
         }
+        public override Unit GetUnitById(int id)
+        { 
+            throw new NotImplementedException(); 
+        }
+        public override bool RemoveUnit(int id)
+            { throw new NotImplementedException(); }
+        public override void UpdateUnit(Unit unit)
+            { throw new NotImplementedException(); }
+        public override List<Unit> FindUnit(string query)
+            { throw new NotImplementedException(); }
+        public override List<Unit.SaveQuantityChange> GetUnitQuantityHistory(int id)
+            { throw new NotImplementedException(); }
     }
 }
