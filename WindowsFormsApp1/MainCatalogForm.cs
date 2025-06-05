@@ -198,5 +198,21 @@ namespace WindowsFormsApp1
                 }
             }
         }
+
+        private void allUnitsShowButton_Click(object sender, EventArgs e)
+        {
+            dataGridView1.DataSource = null;
+            dataGridView1.DataSource = catalog.Units;
+        }
+
+        private void EditUnitcontextMenuStrip_Opening(object sender, CancelEventArgs e)
+        {
+
+        }
+
+        private void contextMenuStrip2_Opening(object sender, CancelEventArgs e)
+        {
+
+        }
     }
 }

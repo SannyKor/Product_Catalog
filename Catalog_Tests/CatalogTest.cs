@@ -29,18 +29,34 @@ namespace ClassCatalog
         {
             //arrange
             Mock<Storage> _mockStorage = new Mock<Storage>();
-            _mockStorage.Setup(s => s.LoadUnits()).Returns(new List<Unit>());
+            Unit expectedUnit = new Unit(10001)
+            {
+                Name = "продукт",
+                Description = "опис",
+                Price = 100.5,
+                Quantity = 10
+            };
+            _mockStorage
+                .Setup(s => s.InsertUnit("продукт", "опис", 100.5, 10))
+                .Returns(expectedUnit);
+            _mockStorage
+                .Setup(s => s.LoadUnits())
+                .Returns(new List<Unit> ());
+
             Catalog catalog = new Catalog(_mockStorage.Object);
-            //Catalog catalog = new Catalog(new FakeStorage());
-            //act
+            
+            //act            
             catalog.AddUnit("продукт", "опис", 100.5, 10);
 
-            //assert                     
-            Assert.AreEqual(10001, catalog.Units[0].Id);
-            Assert.AreEqual("продукт", catalog.Units[0].Name);
-            Assert.AreEqual("опис", catalog.Units[0].Description);
-            Assert.AreEqual(100.5, catalog.Units[0].Price);
-            Assert.AreEqual(10, catalog.Units[0].Quantity);
+            //assert
+            Assert.AreEqual (1, catalog.Units.Count);
+            Unit unit = catalog.Units[0]; 
+
+            Assert.AreEqual(10001, unit.Id);
+            Assert.AreEqual("продукт", unit.Name);
+            Assert.AreEqual("опис", unit.Description);
+            Assert.AreEqual(100.5, unit.Price);
+            Assert.AreEqual(10, unit.Quantity);
         }
 
         [TestMethod]
@@ -48,9 +64,23 @@ namespace ClassCatalog
         {
             //arrange
             Mock<Storage> _mockStorage = new Mock<Storage>();
-            _mockStorage.Setup(s => s.LoadUnits()).Returns(new List<Unit>());
-            Catalog catalog = new Catalog(_mockStorage.Object);
-            //Catalog catalog = new Catalog(new FakeStorage());
+            Unit expectedUnit = new Unit(10001)
+            {
+                Name = "продукт",
+                Description = "опис",
+                Price = 100.5,
+                Quantity = 10
+            };
+            _mockStorage
+                .Setup(s => s.InsertUnit("продукт", "опис", 100.5, 10))
+                .Returns(expectedUnit);
+            _mockStorage
+                .Setup(s => s.LoadUnits())
+                .Returns(new List<Unit>());
+            _mockStorage
+                .Setup(s => s.RemoveUnit(10001))
+                .Returns(true);
+            Catalog catalog = new Catalog(_mockStorage.Object);            
             catalog.AddUnit("продукт", "опис", 100.5, 10);
             int count = catalog.Units.Count;
             //act

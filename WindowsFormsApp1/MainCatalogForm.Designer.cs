@@ -39,6 +39,7 @@
             this.textBoxIdSearch = new System.Windows.Forms.TextBox();
             this.labelId = new System.Windows.Forms.Label();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.allUnitsShowButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -77,7 +78,6 @@
             this.dataGridView1.RowTemplate.Height = 24;
             this.dataGridView1.Size = new System.Drawing.Size(934, 352);
             this.dataGridView1.TabIndex = 10;
-            //this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1_CellContentClick);
             this.dataGridView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DataGridView1_MouseDown);
             // 
             // contextMenuStrip1
@@ -87,19 +87,20 @@
             this.toolStripMenuItemEditUnit,
             this.toolStripMenuItemDelUnit});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(155, 52);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(211, 80);
+            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.EditUnitcontextMenuStrip_Opening);
             // 
             // toolStripMenuItemEditUnit
             // 
             this.toolStripMenuItemEditUnit.Name = "toolStripMenuItemEditUnit";
-            this.toolStripMenuItemEditUnit.Size = new System.Drawing.Size(154, 24);
+            this.toolStripMenuItemEditUnit.Size = new System.Drawing.Size(210, 24);
             this.toolStripMenuItemEditUnit.Text = "Редагувати";
             this.toolStripMenuItemEditUnit.Click += new System.EventHandler(this.ToolStripMenuItemEditUnit_Click);
             // 
             // toolStripMenuItemDelUnit
             // 
             this.toolStripMenuItemDelUnit.Name = "toolStripMenuItemDelUnit";
-            this.toolStripMenuItemDelUnit.Size = new System.Drawing.Size(154, 24);
+            this.toolStripMenuItemDelUnit.Size = new System.Drawing.Size(210, 24);
             this.toolStripMenuItemDelUnit.Text = "Видалити";
             this.toolStripMenuItemDelUnit.Click += new System.EventHandler(this.ToolStripMenuItemDelUnit_Click);
             // 
@@ -135,12 +136,24 @@
             this.contextMenuStrip2.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStrip2.Name = "contextMenuStrip2";
             this.contextMenuStrip2.Size = new System.Drawing.Size(61, 4);
+            this.contextMenuStrip2.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip2_Opening);
+            // 
+            // allUnitsShowButton
+            // 
+            this.allUnitsShowButton.Location = new System.Drawing.Point(361, 12);
+            this.allUnitsShowButton.Name = "allUnitsShowButton";
+            this.allUnitsShowButton.Size = new System.Drawing.Size(163, 46);
+            this.allUnitsShowButton.TabIndex = 14;
+            this.allUnitsShowButton.Text = "товари";
+            this.allUnitsShowButton.UseVisualStyleBackColor = true;
+            this.allUnitsShowButton.Click += new System.EventHandler(this.allUnitsShowButton_Click);
             // 
             // MainCatalogForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(958, 559);
+            this.Controls.Add(this.allUnitsShowButton);
             this.Controls.Add(this.labelId);
             this.Controls.Add(this.textBoxIdSearch);
             this.Controls.Add(this.buttonAddUnit);
@@ -167,6 +180,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemEditUnit;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemDelUnit;
+        private System.Windows.Forms.Button allUnitsShowButton;
     }
 }
 

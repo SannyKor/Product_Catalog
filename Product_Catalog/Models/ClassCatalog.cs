@@ -37,8 +37,8 @@ namespace ClassCatalog
         {
             //Unit unit = new Unit(GetNextId()) { Name = name, Description = description, Price = price, Quantity = quantity };
             Unit unit = storage.InsertUnit(name, description, price, quantity);
-            var saveQuantityHistory = new Unit.SaveQuantityChange(unit.Id, unit.Quantity, DateTime.Now);
-            unit.QuantityHistory.Add(saveQuantityHistory);
+            //var saveQuantityHistory = new Unit.SaveQuantityChange(unit.Id, unit.Quantity, DateTime.Now);
+            //unit.QuantityHistory.Add(saveQuantityHistory);
             units.Add(unit);
 
         }
