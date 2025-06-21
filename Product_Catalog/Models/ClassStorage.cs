@@ -23,6 +23,8 @@ namespace ClassCatalog
     public class StorageFromFile : Storage
     {
         private const string FileName = "catalog.bin";
+        private int count;
+        private readonly List<Unit> units = new List<Unit>();
         public override void SaveUnits(List<Unit> units)
         {
             //var json = JsonSerializer.Serialize(units, new JsonSerializerOptions { WriteIndented = true });
@@ -43,7 +45,9 @@ namespace ClassCatalog
                         writer.Write(unit.QuantityHistory.Count);
                         foreach (var history in unit.QuantityHistory)
                         {
-                            //writer.Write(history);
+                            writer.Write(history.UnitId);
+                            writer.Write(history.NewUnitQuantity);
+                            writer.Write(history.DateOfChange.Ticks);
                         }
                     }
                 }
@@ -52,7 +56,7 @@ namespace ClassCatalog
         }
         public override List<Unit> LoadUnits()
         {
-            List<Unit> units = new List<Unit>();
+            
             if (File.Exists(FileName))
             {
                 //var json = File.ReadAllText(FileName);
@@ -76,30 +80,82 @@ namespace ClassCatalog
                             int historyCount = reader.ReadInt32();
                             for (int j = 0; j < historyCount; j++)
                             {
-                                //unit.QuantityHistory.Add(reader.ReadString());
+                                int unitId = reader.ReadInt32();
+                                int quantity = reader.ReadInt32();
+                                DateTime dateTime = new DateTime(reader.ReadInt64());
+                                var quantityHistory = new Unit.SaveQuantityChange(unitId, quantity, dateTime); 
+                                unit.QuantityHistory.Add(quantityHistory);
                             }
                             units.Add(unit);
                         }
                     }
                 }
             }
+            count = units.Count;
             return units;
         }
         public override Unit InsertUnit(string name, string description, double price, int quantity)
         {
-            throw new NotImplementedException();
+            int id;
+            if (count == 0)            
+                id = 10001;            
+            else            
+                id = count + 1;
+            
+            Unit unit = new Unit(id)
+            {
+                Name = name,
+                Description = description,
+                Price = price,
+                Quantity = quantity
+            };
+            var saveQuantityHistory = new Unit.SaveQuantityChange(unit.Id, unit.Quantity, unit.AddedDate);
+            unit.QuantityHistory.Add(saveQuantityHistory);
+            return unit;
         }
         public override Unit GetUnitById(int id)
-        { 
-            throw new NotImplementedException(); 
+        {
+            Unit unit = units.Find(u => u.Id == id);
+            return unit;
         }
         public override bool RemoveUnit(int id)
-            { throw new NotImplementedException(); }
+        {
+            Unit unit = GetUnitById(id);
+            if (unit == null) return false;
+            return true;
+        }
         public override void UpdateUnit(Unit unit)
-            { throw new NotImplementedException(); }
+        { 
+            Unit _unit = GetUnitById(unit.Id);
+            int oldQuantity = _unit.Quantity;
+            if (_unit == null) return;
+            _unit.Name = unit.Name;
+            _unit.Description = unit.Description;
+            _unit.Price = unit.Price;
+            _unit.Quantity = unit.Quantity;
+            if (oldQuantity != _unit.Quantity)
+            {
+                var saveQuantityHistory = new Unit.SaveQuantityChange(_unit.Id, _unit.Quantity, DateTime.Now);
+                _unit.QuantityHistory.Add(saveQuantityHistory);
+            }
+        }
         public override List<Unit> FindUnit(string query)
-            { throw new NotImplementedException(); }
+        {
+            var found = units
+                    .FindAll(u => u.Name.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .OrderBy(u => u.Id).ToList();
+            return found;
+        }
         public override List<Unit.SaveQuantityChange> GetUnitQuantityHistory(int id)
-            { throw new NotImplementedException(); }
+        { 
+            Unit unit = GetUnitById(id);
+            List<Unit.SaveQuantityChange> quantityHistory = new List<Unit.SaveQuantityChange>();
+            if (unit == null) return null;
+            foreach (var quantity in unit.QuantityHistory)
+            {
+                quantityHistory.Add(quantity);
+            }
+            return quantityHistory;
+        }
     }
 }

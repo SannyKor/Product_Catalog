@@ -13,6 +13,7 @@ namespace ClassCatalog
 {
     public class StorageFromDB : Storage
     {
+        private readonly List<Unit> units = new List<Unit>();
         public StorageFromDB() 
         {            
             using (var connection = Sqlite.GetConnection()) 
@@ -56,7 +57,7 @@ namespace ClassCatalog
         }
         public override List<Unit> LoadUnits()
         {
-            List<Unit> units = new List<Unit>();
+            
 
             using (var connection = Sqlite.GetConnection())
             {
@@ -196,6 +197,7 @@ namespace ClassCatalog
         public override bool RemoveUnit(int id)
         {
             bool wasDelete;
+            bool wasDeletedUnitHistory;
             Unit unit = GetUnitById(id);
             if (unit == null)
             {
@@ -204,7 +206,7 @@ namespace ClassCatalog
             using (var connection = Sqlite.GetConnection())
             {
                 connection.Open();
-                string deleteSql = "DELETE FROM units WHERE id=@id";
+                string deleteSql = @"DELETE FROM units WHERE id=@id";
                 using (var command = new SQLiteCommand(deleteSql, connection))
                 {
                     command.Parameters.AddWithValue("@id", id);
@@ -218,15 +220,19 @@ namespace ClassCatalog
                     command.Parameters.AddWithValue("@unit_id", unit.Id);
                     command.Parameters.AddWithValue("@new_quantity", 0);
                     command.Parameters.AddWithValue("@change_time", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                    command.ExecuteNonQuery();
+                    wasDeletedUnitHistory = command.ExecuteNonQuery() > 0;
                 }
             }
-
-            return wasDelete;
+            if (wasDelete && wasDeletedUnitHistory)
+                return true;
+            else
+                return false;
         }
         public override void UpdateUnit(Unit unit)
         {
-
+            var oldUnit = GetUnitById(unit.Id);
+            bool wasChangedQuantity = oldUnit.Quantity != unit.Quantity;
+            DateTime dateTime = DateTime.Now;
             using (var connection = Sqlite.GetConnection())
             {
                 connection.Open();
@@ -235,7 +241,7 @@ namespace ClassCatalog
                                     description = @description,
                                     price = @price,
                                     quantity = @quantity
-                                WHERE id = @id";
+                                    WHERE id = @id";
                 using (var command = new SQLiteCommand(updateUnitSql, connection))
                 {
                     command.Parameters.AddWithValue("@name", unit.Name);
@@ -246,16 +252,32 @@ namespace ClassCatalog
 
                     command.ExecuteNonQuery();
                 }
-                
-                string insertSqlChangeQuantity = @"
+
+                if (wasChangedQuantity)
+                {
+                    string insertSqlChangeQuantity = @"
                                     INSERT INTO quantity_history (unit_id, new_quantity, change_time) 
                                     VALUES (@unit_id, @new_quantity, @change_time)";
-                using (var command = new SQLiteCommand(insertSqlChangeQuantity, connection))
+                    using (var command = new SQLiteCommand(insertSqlChangeQuantity, connection))
+                    {
+                        command.Parameters.AddWithValue("@unit_id", unit.Id);
+                        command.Parameters.AddWithValue("@new_quantity", unit.Quantity);
+                        command.Parameters.AddWithValue("@change_time", dateTime);
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            Unit unitInList = units.Find(u => u.Id == unit.Id);
+            if (unitInList != null)
+            { 
+                unitInList.Name = unit.Name; 
+                unitInList.Description = unit.Description;
+                unitInList.Price = unit.Price;
+                unitInList.Quantity = unit.Quantity;
+                if (wasChangedQuantity)
                 {
-                    command.Parameters.AddWithValue("@unit_id", unit.Id);
-                    command.Parameters.AddWithValue("@new_quantity", unit.Quantity);
-                    command.Parameters.AddWithValue("@change_time", DateTime.Now);
-                    command.ExecuteNonQuery();
+                    var saveQuantityHistory = new Unit.SaveQuantityChange(unit.Id, unit.Quantity, dateTime);
+                    unitInList.QuantityHistory.Add(saveQuantityHistory);
                 }
             }
         }
@@ -284,7 +306,6 @@ namespace ClassCatalog
                         }
                     }
                 }
-
             }
             return foundResults;
         }
@@ -294,7 +315,7 @@ namespace ClassCatalog
             using (var countCmd = new SQLiteCommand(countSql, connection))
             {
                 long count = (long)countCmd.ExecuteScalar();
-                if ( count ==0 )
+                if ( count == 0 )
                 {
                     string deleteSql = $"DELETE FROM sqlite_sequence WHERE name='{tableName}'";
                     using (var deleteCmd = new SQLiteCommand(deleteSql, connection))
