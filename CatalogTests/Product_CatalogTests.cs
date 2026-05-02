@@ -54,6 +54,7 @@ namespace CatalogTests
         [TestMethod]
         public void RemoveUnit_ShouldUnitDecreas_WhenUnitExists() 
         {
+            Catalog catalog = new Catalog(new FakeStorage());
             //arrange
             Mock<Storage> _mockStorage = new Mock<Storage>();
             _mockStorage.Setup(s => s.LoadUnits()).Returns(new List<Unit>());

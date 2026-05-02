@@ -9,6 +9,7 @@ using ClassCatalog;
 
 namespace ClassCatalog
 {
+   
     public class Catalog
     {
         protected List<Unit> units = new List<Unit>();
@@ -52,6 +53,8 @@ namespace ClassCatalog
         {
             return storage.GetUnitQuantityHistory(id);
         }
+
+        
 
         ~Catalog()
         {
