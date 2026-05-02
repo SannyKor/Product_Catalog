@@ -19,7 +19,7 @@ namespace WindowsFormsApp1
         public MainCatalogForm()
         {
             
-            catalog = new Catalog(new StorageFromFile());
+            catalog = new Catalog(new StorageFromDB());
             InitializeComponent();
             SetupDataGridView();
 
@@ -53,7 +53,7 @@ namespace WindowsFormsApp1
 
         
 
-        private void buttonSearch_Click(object sender, EventArgs e)
+        private void ButtonSearch_Click(object sender, EventArgs e)
         {
             string findId = requestId_field.Text;
             //Unit unit = catalog.GetUnitById(Convert.ToInt32(findId));
@@ -75,12 +75,12 @@ namespace WindowsFormsApp1
 
         }
 
-        private void findId_TextChanged(object sender, EventArgs e)
+        private void FindId_TextChanged(object sender, EventArgs e)
         {
 
         }
 
-        private void buttonAddUnit_Click(object sender, EventArgs e)
+        private void ButtonAddUnit_Click(object sender, EventArgs e)
         {
             AddUnitForm addUnitForm = new AddUnitForm();
             if (addUnitForm.ShowDialog() == DialogResult.OK)
@@ -97,7 +97,7 @@ namespace WindowsFormsApp1
             }
         }
 
-        private void textBoxIdSearch_TextChanged(object sender, EventArgs e)
+        private void TextBoxIdSearch_TextChanged(object sender, EventArgs e)
         {
             string input = textBoxIdSearch.Text.Trim();
             dataGridView1.ClearSelection();
@@ -121,7 +121,7 @@ namespace WindowsFormsApp1
 
         }
 
-        private void dataGridView1_MouseDown(object sender, MouseEventArgs e)
+        private void DataGridView1_MouseDown(object sender, MouseEventArgs e)
         {
             if(e.Button == MouseButtons.Right)
             {
@@ -136,7 +136,7 @@ namespace WindowsFormsApp1
             }
         }
 
-        private void toolStripMenuItemEditUnit_Click(object sender, EventArgs e)
+        private void ToolStripMenuItemEditUnit_Click(object sender, EventArgs e)
         {
             ChangeUnitForm changeUnitForm = new ChangeUnitForm();
             if(changeUnitForm.ShowDialog() == DialogResult.OK)
@@ -147,18 +147,15 @@ namespace WindowsFormsApp1
                     Unit unit = catalog.GetUnitById(id);
                     if (unit != null)
                     {
-                        if (!string.IsNullOrWhiteSpace(changeUnitForm.unitName))
-                        {                            
+                        if (!string.IsNullOrWhiteSpace(changeUnitForm.unitName))                                                    
                             unit.Name = changeUnitForm.unitName;
-                        }
-                        if (!string.IsNullOrWhiteSpace(changeUnitForm.unitDescription))
-                        {                           
+                        
+                        if (!string.IsNullOrWhiteSpace(changeUnitForm.unitDescription))                                                   
                             unit.Description = changeUnitForm.unitDescription;
-                        }
-                        if (changeUnitForm.unitPrice != 0)
-                        {                            
+                        
+                        if (changeUnitForm.unitPrice != 0)                                                    
                             unit.Price = changeUnitForm.unitPrice;
-                        }
+                        
                         dataGridView1.DataSource = null;
                         dataGridView1.DataSource = catalog.Units;
                     }
@@ -166,7 +163,7 @@ namespace WindowsFormsApp1
             }
         }
 
-        private void toolStripMenuItemDelUnit_Click(object sender, EventArgs e)
+        private void ToolStripMenuItemDelUnit_Click(object sender, EventArgs e)
         {
             if (dataGridView1.CurrentRow != null)
             {
@@ -185,7 +182,7 @@ namespace WindowsFormsApp1
             }
         }
 
-        private void toolStripMenuItemName_Click(object sender, EventArgs e)
+        private void ToolStripMenuItemName_Click(object sender, EventArgs e)
         {
             if (dataGridView1.CurrentRow != null)
             {
@@ -200,6 +197,22 @@ namespace WindowsFormsApp1
                     MessageBox.Show("Товар не знайдено");
                 }
             }
+        }
+
+        private void allUnitsShowButton_Click(object sender, EventArgs e)
+        {
+            dataGridView1.DataSource = null;
+            dataGridView1.DataSource = catalog.Units;
+        }
+
+        private void EditUnitcontextMenuStrip_Opening(object sender, CancelEventArgs e)
+        {
+
+        }
+
+        private void contextMenuStrip2_Opening(object sender, CancelEventArgs e)
+        {
+
         }
     }
 }

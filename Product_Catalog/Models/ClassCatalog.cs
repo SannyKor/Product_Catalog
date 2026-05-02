@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClassCatalog;
 
 
 namespace ClassCatalog
@@ -11,61 +13,44 @@ namespace ClassCatalog
     {
         protected List<Unit> units = new List<Unit>();
         public IReadOnlyList<Unit> Units => units;
-        //private int UnitId;
-        protected Storage storage;// = new StorageFromFile();
-
-
-
+        
+        protected Storage storage;
+        
 
         public Catalog(Storage storage)
         {
             this.storage = storage;
-            units = storage.LoadUnits();
-            
-        }
-
-        protected int GetNextId()
-        {
-            return units.Count > 0 ? units[units.Count - 1].Id + 1 : 10001;
-        }
+            units = storage.LoadUnits();            
+        }        
 
         public void AddUnit(string name, string description, double price, int quantity)
-        {
-            Unit unit = new Unit(GetNextId()) { Name = name, Description = description, Price = price, Quantity = quantity };
-
+        {            
+            Unit unit = storage.InsertUnit(name, description, price, quantity);           
             units.Add(unit);
-            DateTime time = DateTime.Now;
-            unit.QuantityHistory.Add($"час: {time}:\t{quantity};");
-            Console.WriteLine("Товар додадно.\n");
-            unit.AddedDate = time;
-
         }
+
         public Unit GetUnitById(int id)
-        {
-            Unit unit = units.Find(u => u.Id == id);
-            return unit;
+        {            
+            return storage.GetUnitById(id);                        
         }
-
 
         public bool RemoveUnit(int id)
         {
-            Unit unit = GetUnitById(id);
-            /*if (unit == null)
-            {
-                return false;
-            }*/
-
-            return units.Remove(unit);
-
-
+            return storage.RemoveUnit(id) && units.Remove(units.Find(u => u.Id == id));
         }
     
         
-        public List<Unit> FindUnit(string Query)
+        public List<Unit> FindUnit(string query)
+        {            
+            return storage.FindUnit(query);
+        }
+        public void UpdateUnit (Unit unit)
+        {            
+            storage.UpdateUnit(unit);
+        }
+        public List<Unit.SaveQuantityChange> GetUnitQuantityHistory(int id)
         {
-            var found = units.FindAll(u => u.Name.IndexOf(Query, StringComparison.OrdinalIgnoreCase) >= 0);
-            return found;
-
+            return storage.GetUnitQuantityHistory(id);
         }
 
         ~Catalog()

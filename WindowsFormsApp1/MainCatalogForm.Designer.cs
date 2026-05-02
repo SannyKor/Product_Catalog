@@ -39,6 +39,7 @@
             this.textBoxIdSearch = new System.Windows.Forms.TextBox();
             this.labelId = new System.Windows.Forms.Label();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.allUnitsShowButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -49,7 +50,7 @@
             this.requestId_field.Name = "requestId_field";
             this.requestId_field.Size = new System.Drawing.Size(123, 22);
             this.requestId_field.TabIndex = 3;
-            this.requestId_field.TextChanged += new System.EventHandler(this.findId_TextChanged);
+            this.requestId_field.TextChanged += new System.EventHandler(this.FindId_TextChanged);
             // 
             // buttonSearch
             // 
@@ -59,7 +60,7 @@
             this.buttonSearch.TabIndex = 8;
             this.buttonSearch.Text = "Пошук";
             this.buttonSearch.UseVisualStyleBackColor = true;
-            this.buttonSearch.Click += new System.EventHandler(this.buttonSearch_Click);
+            this.buttonSearch.Click += new System.EventHandler(this.ButtonSearch_Click);
             // 
             // dataGridView1
             // 
@@ -77,7 +78,7 @@
             this.dataGridView1.RowTemplate.Height = 24;
             this.dataGridView1.Size = new System.Drawing.Size(934, 352);
             this.dataGridView1.TabIndex = 10;
-            this.dataGridView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dataGridView1_MouseDown);
+            this.dataGridView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DataGridView1_MouseDown);
             // 
             // contextMenuStrip1
             // 
@@ -87,20 +88,21 @@
             this.toolStripMenuItemDelUnit});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(211, 80);
+            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.EditUnitcontextMenuStrip_Opening);
             // 
             // toolStripMenuItemEditUnit
             // 
             this.toolStripMenuItemEditUnit.Name = "toolStripMenuItemEditUnit";
             this.toolStripMenuItemEditUnit.Size = new System.Drawing.Size(210, 24);
             this.toolStripMenuItemEditUnit.Text = "Редагувати";
-            this.toolStripMenuItemEditUnit.Click += new System.EventHandler(this.toolStripMenuItemEditUnit_Click);
+            this.toolStripMenuItemEditUnit.Click += new System.EventHandler(this.ToolStripMenuItemEditUnit_Click);
             // 
             // toolStripMenuItemDelUnit
             // 
             this.toolStripMenuItemDelUnit.Name = "toolStripMenuItemDelUnit";
             this.toolStripMenuItemDelUnit.Size = new System.Drawing.Size(210, 24);
             this.toolStripMenuItemDelUnit.Text = "Видалити";
-            this.toolStripMenuItemDelUnit.Click += new System.EventHandler(this.toolStripMenuItemDelUnit_Click);
+            this.toolStripMenuItemDelUnit.Click += new System.EventHandler(this.ToolStripMenuItemDelUnit_Click);
             // 
             // buttonAddUnit
             // 
@@ -110,7 +112,7 @@
             this.buttonAddUnit.TabIndex = 11;
             this.buttonAddUnit.Text = "Додати товар";
             this.buttonAddUnit.UseVisualStyleBackColor = true;
-            this.buttonAddUnit.Click += new System.EventHandler(this.buttonAddUnit_Click);
+            this.buttonAddUnit.Click += new System.EventHandler(this.ButtonAddUnit_Click);
             // 
             // textBoxIdSearch
             // 
@@ -118,7 +120,7 @@
             this.textBoxIdSearch.Name = "textBoxIdSearch";
             this.textBoxIdSearch.Size = new System.Drawing.Size(75, 22);
             this.textBoxIdSearch.TabIndex = 12;
-            this.textBoxIdSearch.TextChanged += new System.EventHandler(this.textBoxIdSearch_TextChanged);
+            this.textBoxIdSearch.TextChanged += new System.EventHandler(this.TextBoxIdSearch_TextChanged);
             // 
             // labelId
             // 
@@ -134,12 +136,24 @@
             this.contextMenuStrip2.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStrip2.Name = "contextMenuStrip2";
             this.contextMenuStrip2.Size = new System.Drawing.Size(61, 4);
+            this.contextMenuStrip2.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip2_Opening);
+            // 
+            // allUnitsShowButton
+            // 
+            this.allUnitsShowButton.Location = new System.Drawing.Point(361, 12);
+            this.allUnitsShowButton.Name = "allUnitsShowButton";
+            this.allUnitsShowButton.Size = new System.Drawing.Size(163, 46);
+            this.allUnitsShowButton.TabIndex = 14;
+            this.allUnitsShowButton.Text = "товари";
+            this.allUnitsShowButton.UseVisualStyleBackColor = true;
+            this.allUnitsShowButton.Click += new System.EventHandler(this.allUnitsShowButton_Click);
             // 
             // MainCatalogForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(958, 559);
+            this.Controls.Add(this.allUnitsShowButton);
             this.Controls.Add(this.labelId);
             this.Controls.Add(this.textBoxIdSearch);
             this.Controls.Add(this.buttonAddUnit);
@@ -166,6 +180,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemEditUnit;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemDelUnit;
+        private System.Windows.Forms.Button allUnitsShowButton;
     }
 }
 
