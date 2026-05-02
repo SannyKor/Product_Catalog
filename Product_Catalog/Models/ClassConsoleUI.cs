@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -47,30 +48,18 @@ namespace ClassCatalog
                 Console.WriteLine("Товар не знайдено\n");
             }
         }
-        public void ChangeQuantity()
-        {
-            Console.WriteLine("введіть артикул: ");
-            int id = int.Parse(Console.ReadLine());
-            Console.WriteLine("введіть кількість: ");
-            int quantity = int.Parse(Console.ReadLine());
-            Unit unit = catalog.GetUnitById(id);
-            if (unit == null)
-            {
-                Console.WriteLine("товар не знайдено\n");
-                return;
-            }
-            else
-            {
-                unit.Quantity = quantity;
-                DateTime time = DateTime.Now;
-                unit.QuantityHistory.Add($"час: {time}:\t{quantity};");
-            }
-        }
+        
         public void ChangeUnitInfo()
         {
+            int id;
+            
             Console.WriteLine("введіть артикул: ");
-            int id = int.Parse(Console.ReadLine());
-            Unit unit = catalog.GetUnitById(id);
+            while (!int.TryParse(Console.ReadLine(), out id))
+            {
+                Console.WriteLine("невіний формат, спробуйте ще раз");                
+            }
+                        
+            Unit unit = catalog.GetUnitById(id);            
 
             if (unit == null)
             {
@@ -79,6 +68,15 @@ namespace ClassCatalog
             }
             else
             {
+                Unit changedUnit = new Unit(id)
+                {
+                    Name = unit.Name,
+                    Description = unit.Description,
+                    Price = unit.Price,
+                    Quantity = unit.Quantity,
+                    AddedDate = unit.AddedDate,
+                    QuantityHistory = unit.QuantityHistory
+                };
                 Console.WriteLine("введіть нове ім'я або enter щоб продовжити: ");
                 string name = Console.ReadLine();
                 if (!string.IsNullOrEmpty(name))
@@ -91,24 +89,32 @@ namespace ClassCatalog
                     }
                     else
                     {
-                        unit.Name = name;
+                        changedUnit.Name = name;
                     }
                 }
 
+                Console.WriteLine("введіть кількість: ");
+                                
+                if (int.TryParse(Console.ReadLine(), out int parsedQuantity))               
+                {
+                    changedUnit.Quantity = parsedQuantity;                    
+                }
 
                 Console.WriteLine("змініть ціну або натисніть enter щоб продовжити: ");
-                if (double.TryParse(Console.ReadLine(), out double price))
+                if (double.TryParse(Console.ReadLine(), out double parsedPrice))
                 {
-                    unit.Price = price;
+                    changedUnit.Price = parsedPrice;
                 }
 
                 Console.WriteLine("введіть новий опис або enter щоб продовжити без змін: ");
                 string description = Console.ReadLine();
                 if (!string.IsNullOrEmpty(description))
                 {
-                    unit.Description = description;
+                    changedUnit.Description = description;
                 }
+                catalog.UpdateUnit(changedUnit);
             }
+            
         }
         public void UnitInfo(Unit unit)
         {
@@ -151,12 +157,15 @@ namespace ClassCatalog
         {
             Console.WriteLine("введіть артикул: ");
             int id = int.Parse(Console.ReadLine());
-            Unit unit = catalog.GetUnitById(id);
+            List<Unit.SaveQuantityChange> quantityHistory = new List<Unit.SaveQuantityChange>();
+            quantityHistory = catalog.GetUnitQuantityHistory(id);
+            Console.WriteLine("\nартикул:\tкількість:\tчас:");
 
-            foreach (var quantity in unit.QuantityHistory)
+            foreach (var quantity in quantityHistory)
             {
-                Console.WriteLine($"{quantity}\nнатисніть 'enter' для продовження\n");                
+                Console.WriteLine($"{quantity.UnitId}\t\t{quantity.NewUnitQuantity}\t\t{quantity.DateOfChange}");                
             }
+            Console.WriteLine("\n");
         }
         public void FindUnitByName()
         {
@@ -182,14 +191,13 @@ namespace ClassCatalog
             {
                 Console.WriteLine("виберіть один із варіантів: " +
                     "\n1. додати новий товар; " +
-                    "\n2. видалити товар; " +
-                    "\n3. змінити кількість; " +
-                    "\n4. змінити інформацію про товар; " +
-                    "\n5. вивести інформацію про товар;" +
-                    "\n6. показати весь каталог;" +
-                    "\n7. показати рух кількості по товару;" +
-                    "\n8. знайти по назві або частині назви;" +
-                    "\n9. вийти;\n");
+                    "\n2. видалити товар; " +                    
+                    "\n3. змінити інформацію про товар; " +
+                    "\n4. вивести інформацію про товар;" +
+                    "\n5. показати весь каталог;" +
+                    "\n6. показати рух кількості по товару;" +
+                    "\n7. знайти по назві або частині назви;" +
+                    "\n8. вийти;\n");
 
                 string choise = Console.ReadLine();
                 switch (choise)
@@ -199,26 +207,23 @@ namespace ClassCatalog
                         break;
                     case "2":
                         RemoveUnit();
-                        break;
+                        break;                   
                     case "3":
-                        ChangeQuantity();
-                        break;
-                    case "4":
                         ChangeUnitInfo();
                         break;
-                    case "5":
+                    case "4":
                         ShowUnitInfo();
                         break;
-                    case "6":
+                    case "5":
                         ShowAllUnitsInfo(catalog.Units);
                         break;
-                    case "7":
+                    case "6":
                         ShowUnitQuantityHistory();
                         break;
-                    case "8":
+                    case "7":
                         FindUnitByName();
                         break;
-                    case "9":
+                    case "8":
                         return;
                     default:
                         Console.WriteLine("невірний вибір. спробуйте ще раз\n");

@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ClassCatalog;
 using System.Collections.Generic;
+using Moq;
 
 
 
@@ -10,27 +11,19 @@ namespace CatalogTests
     [TestClass]
     public sealed class Product_CatalogTests
     {
-        //каталог і сторедж будем створювать в кожному тесті окремо
-        //private Catalog catalog;
-        //private FakeStorage fakeStorage;
+        
 
         [TestInitialize]
-        public void Setup()
-        {
-            //цей метод викликаеться 1 раз перед стартом тесті,
-            //нем це зараз не  потрібно закоментуем 
-            //fakeStorage = new FakeStorage();
-            //fakeStorage.Clear();
-            //catalog = new Catalog(fakeStorage);
-            
-        }
+        
 
         [TestMethod]
         public void AddUnit_AddedSuccesfully()
         {
             //arrange
-            //в нас кожен тест атомарний, каталог новий і сторедж також
-            Catalog catalog = new Catalog(new FakeStorage());
+            Mock<Storage> _mockStorage = new Mock<Storage>();
+            _mockStorage.Setup(s => s.LoadUnits()).Returns(new List<Unit>());
+            Catalog catalog = new(_mockStorage.Object);
+            //Catalog catalog = new Catalog(new FakeStorage());
 
             //act
             catalog.AddUnit("продукт", "опис", 100.5, 10);
@@ -43,7 +36,10 @@ namespace CatalogTests
         public void AddUnit_ValidData()
         {
             //arrange
-            Catalog catalog = new Catalog(new FakeStorage());
+            Mock<Storage> _mockStorage = new Mock<Storage>();
+            _mockStorage.Setup(s => s.LoadUnits()).Returns(new List<Unit>());
+            Catalog catalog = new(_mockStorage.Object);
+            //Catalog catalog = new Catalog(new FakeStorage());
             //act
             catalog.AddUnit("продукт", "опис", 100.5, 10);
 
@@ -56,24 +52,26 @@ namespace CatalogTests
         }
 
         [TestMethod]
-        public void TestMethod2() 
+        public void RemoveUnit_ShouldUnitDecreas_WhenUnitExists() 
         {
             Catalog catalog = new Catalog(new FakeStorage());
             //arrange
+            Mock<Storage> _mockStorage = new Mock<Storage>();
+            _mockStorage.Setup(s => s.LoadUnits()).Returns(new List<Unit>());
+            Catalog catalog = new(_mockStorage.Object);
+            //Catalog catalog = new Catalog(new FakeStorage());
             catalog.AddUnit("продукт", "опис", 100.5, 10);
+            int count = catalog.Units.Count;
             //act
             catalog.RemoveUnit(10001);
             //assert
-            Assert.AreEqual(0, catalog.Units.Count);
+            Assert.AreEqual(count -1 , catalog.Units.Count);
         }
 
         
     
     }
-
-    //реалізація методів не потрібно, можна обійтись просто заглушками,
-    //а краще попрактикувать з Moqu або схожой бібліотекой для моків
-    public class FakeStorage : Storage
+    /*public class FakeStorage : Storage
     {
         //private List<Unit> _units = new List<Unit>();
         public override List<Unit> LoadUnits()
@@ -87,5 +85,5 @@ namespace CatalogTests
 
         //public void Clear() => _units.Clear();
 
-    }
+    }*/
 }
